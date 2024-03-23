@@ -1,9 +1,12 @@
+import {Route, Routes} from "react-router-dom";
+import Login from "./components/Login.tsx";
+
 function App() {
 
   return (
-    <>
-        <p>Hello world</p>
-    </>
+      <Routes>
+          <Route path="/" element={<Login />} />
+      </Routes>
   )
 }
 
