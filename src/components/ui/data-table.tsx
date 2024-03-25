@@ -13,13 +13,15 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import {Skeleton} from "@/components/ui/skeleton.tsx";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
+    isLoading: boolean
 }
 
-export function DataTable<TData, TValue>({columns, data,}: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({columns, data, isLoading}: DataTableProps<TData, TValue>) {
     const table = useReactTable({
         data,
         columns,
@@ -48,26 +50,35 @@ export function DataTable<TData, TValue>({columns, data,}: DataTableProps<TData,
                     ))}
                 </TableHeader>
                 <TableBody>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {!isLoading ?
+                        (table.getRowModel().rows.map((row) => (
+                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <>
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="text-center">
+                                        <Skeleton className="h-8 w-full"/>
                                     </TableCell>
-                                ))}
-                            </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No results.
-                            </TableCell>
-                        </TableRow>
-                    )}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="text-center">
+                                        <Skeleton className="h-8 w-full"/>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="text-center">
+                                        <Skeleton className="h-8 w-full"/>
+                                    </TableCell>
+                                </TableRow>
+                            </>
+                        )}
                 </TableBody>
             </Table>
         </div>
