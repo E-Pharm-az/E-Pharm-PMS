@@ -15,6 +15,7 @@ export interface TokenPayload {
 export interface AuthUser {
     tokenResponse: TokenResponse,
     id: string,
+    companyId: number,
     email: string,
     firstname: string,
 }
@@ -28,14 +29,12 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
     auth: null,
-    setAuth: () => {
-    },
+    setAuth: () => {},
     isAuthenticated: () => false,
-    logout: () => {
-    }
+    logout: () => {}
 });
 
-export const AuthProvider = ({children}: { children: ReactNode }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [auth, setAuth] = useState<AuthUser | null>(null);
 
     const isAuthenticated = (): boolean => {
