@@ -17,13 +17,18 @@ import {IoIosMenu} from "react-icons/io";
 import {BiHomeAlt} from "react-icons/bi";
 import {AiOutlineLineChart} from "react-icons/ai";
 import {FaRegUserCircle} from "react-icons/fa";
+import {
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from "@/components/ui/resizable.tsx"
 
 const DashboardLayout = () => {
     const location = useLocation();
 
     return (
-        <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-            <div className="hidden border-r bg-muted/40 md:block">
+        <ResizablePanelGroup className="min-h-screen w-full" direction="horizontal">
+            <ResizablePanel className="hidden border-r bg-muted/40 md:block" defaultSize={15} minSize={12} maxSize={30}>
                 <div className="flex h-full max-h-screen flex-col gap-2">
                     <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                         <Link to={"/"} className="flex items-center gap-2 font-semibold">
@@ -81,8 +86,9 @@ const DashboardLayout = () => {
                         </nav>
                     </div>
                 </div>
-            </div>
-            <div className="flex flex-col">
+            </ResizablePanel>
+            <ResizableHandle withHandle/>
+            <ResizablePanel className="flex flex-col">
                 <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
                     <Sheet>
                         <SheetTrigger asChild>
@@ -99,7 +105,7 @@ const DashboardLayout = () => {
                                 </Link>
                                 <Link to={"/dashboard"}
                                       className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                                            location.pathname === '/dashboard' ? 'bg-muted text-primary' : 'text-muted-foreground'
+                                          location.pathname === '/dashboard' ? 'bg-muted text-primary' : 'text-muted-foreground'
                                       }`}
                                 >
                                     <BiHomeAlt className="h-5 w-5"/>
@@ -173,8 +179,8 @@ const DashboardLayout = () => {
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                     <Outlet/>
                 </main>
-            </div>
-        </div>
+            </ResizablePanel>
+        </ResizablePanelGroup>
     );
 };
 

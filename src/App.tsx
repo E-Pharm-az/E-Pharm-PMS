@@ -6,6 +6,7 @@ import RequireAuth from "@/components/RequireAuth.tsx";
 import PersistLogin from "@/components/PersistLogin.tsx";
 import Products from "@/components/Products.tsx";
 import Dashboard from "@/components/Dashboard.tsx";
+import AddProduct from "@/components/AddProduct.tsx";
 
 
 function App() {
@@ -14,9 +15,10 @@ function App() {
             <Route element={<PersistLogin/>}>
                 <Route element={<RequireAuth/>}>
                     <Route path="/dashboard" element={<DashboardLayout/>}>
-                        <Route path="/dashboard" element={<Dashboard/>}/>
-                        <Route path="/dashboard/products" element={<Products/>}/>
+                        <Route path="" element={<Dashboard/>}/>
+                        <Route path="products" element={<Products/>}/>
                     </Route>
+                    <Route path="/add-product" element={<AddProduct/>}/>
                 </Route>
                 <Route path="/" element={<Login/>}/>
                 <Route path="*" element={<NotFound/>}/>

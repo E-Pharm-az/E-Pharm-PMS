@@ -82,7 +82,7 @@ const Login = () => {
                 )}
                 {error && <div className="text-center text-red-500">{error}</div>}
 
-                <Card className="mx-auto max-w-sm">
+                <Card className="mx-auto md:max-w-sm">
                     <CardHeader>
                         <CardTitle className="text-2xl">Login</CardTitle>
                         <CardDescription>Enter your email below to login to your account</CardDescription>
