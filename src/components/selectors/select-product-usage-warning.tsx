@@ -43,7 +43,7 @@ export const SelectProductUsageWarnings = ({onSelectedUsageWarnings, selectedUsa
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger type="button">
-                            <CircleHelp className="text-muted-foreground w-4 h-4"/>
+                            <CircleHelp className="h-4 w-4 text-muted-foreground"/>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Select the usage warnings for the product</p>
@@ -80,10 +80,10 @@ export const SelectProductUsageWarnings = ({onSelectedUsageWarnings, selectedUsa
                 <div className="flex items-center space-x-2">
                     {selectedUsageWarnings.map(warning => (
                         <div
-                            className="flex items-center space-x-0.5 bg-muted border rounded-full p-1 border-neutral-200">
-                            <X className="w-4 h-4 text-red-500 cursor-pointer"
+                            className="flex items-center rounded-full border border-neutral-200 p-1 space-x-0.5 bg-muted">
+                            <X className="h-4 w-4 cursor-pointer text-red-500"
                                onClick={() => handleRemoveUsageWarning(warning)}/>
-                            <div className="text-xs ">{warning.WarningText}</div>
+                            <div className="text-xs">{warning.WarningText}</div>
                         </div>
                     ))}
                 </div>

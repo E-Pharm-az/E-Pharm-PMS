@@ -7,7 +7,7 @@ import {Button} from "@/components/ui/button.tsx";
 
 export interface ActiveIngredient{
     Id: number
-    IngredientName: string
+    Name: string
 }
 
 interface Props {
@@ -19,27 +19,27 @@ export const SelectProductIngredients = ({onSelectedActiveIngredients, selectedA
     const [activeIngredients, setActiveIngredients] = useState<ActiveIngredient[]>([
         {
             Id: 1,
-            IngredientName: "Ibuprofen"
+            Name: "Ibuprofen"
         },
         {
             Id: 2,
-            IngredientName: "Paracetamol"
+            Name: "Paracetamol"
         },
         {
             Id: 3,
-            IngredientName: "Aspirin"
+            Name: "Aspirin"
         },
         {
             Id: 4,
-            IngredientName: "Loratadine"
+            Name: "Loratadine"
         }
     ]);
 
     const handleSelectIngredient = (selectedIngredient: string) => {
-        const isAlreadySelected = selectedActiveIngredients.some(ingredient => ingredient.IngredientName === selectedIngredient);
+        const isAlreadySelected = selectedActiveIngredients.some(ingredient => ingredient.Name === selectedIngredient);
 
         if (!isAlreadySelected) {
-            const ingredients = activeIngredients.find(ingredients => ingredients.IngredientName === selectedIngredient);
+            const ingredients = activeIngredients.find(ingredients => ingredients.Name === selectedIngredient);
             if (ingredients) {
                 onSelectedActiveIngredients(prevSelected => [...prevSelected, ingredients]);
             }
@@ -54,13 +54,13 @@ export const SelectProductIngredients = ({onSelectedActiveIngredients, selectedA
         <div className="flex flex-col space-y-1.5">
             <div className="flex items-center space-x-1">
                 <div className="flex items-center space-x-0.5">
-                    <Asterisk className="w-4 h-4 text-red-500"/>
+                    <Asterisk className="h-4 w-4 text-red-500"/>
                     <Label>Active Ingredients</Label>
                 </div>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger type="button">
-                            <CircleHelp className="text-muted-foreground w-4 h-4"/>
+                            <CircleHelp className="h-4 w-4 text-muted-foreground"/>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Select the active ingredients for the product</p>
@@ -86,9 +86,9 @@ export const SelectProductIngredients = ({onSelectedActiveIngredients, selectedA
                                 .map(warehouse => (
                                     <SelectItem
                                         key={warehouse.Id}
-                                        value={warehouse.IngredientName}
+                                        value={warehouse.Name}
                                     >
-                                        {warehouse.IngredientName}
+                                        {warehouse.Name}
                                     </SelectItem>
                                 ))}
                         </SelectContent>
@@ -101,9 +101,9 @@ export const SelectProductIngredients = ({onSelectedActiveIngredients, selectedA
             {selectedActiveIngredients.length > 0 && (
                 <div className="flex items-center space-x-2">
                     {selectedActiveIngredients.map(ingredient => (
-                        <div className="flex items-center space-x-0.5 bg-muted border rounded-full p-1 border-neutral-200">
-                            <X className="w-4 h-4 text-red-500 cursor-pointer" onClick={() => handleRemoveIngredient(ingredient)}/>
-                            <div className="text-xs ">{ingredient.IngredientName}</div>
+                        <div className="flex items-center rounded-full border border-neutral-200 p-1 space-x-0.5 bg-muted">
+                            <X className="h-4 w-4 cursor-pointer text-red-500" onClick={() => handleRemoveIngredient(ingredient)}/>
+                            <div className="text-xs">{ingredient.Name}</div>
                         </div>
                     ))}
                 </div>

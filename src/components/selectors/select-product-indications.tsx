@@ -6,7 +6,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger} from "@/components/ui/
 
 export interface Indication {
     Id: number;
-    IndicationName: string;
+    Name: string;
 }
 
 interface IndicationsProps {
@@ -16,17 +16,17 @@ interface IndicationsProps {
 
 export const SelectProductIndications = ({onSelectedIndications, selectedIndications}: IndicationsProps) => {
     const [indications, setIndications] = useState<Indication[]>([
-        {Id: 1, IndicationName: "Fever"},
-        {Id: 2, IndicationName: "Pain Relief"},
-        {Id: 3, IndicationName: "Allergy Relief"},
-        {Id: 4, IndicationName: "Cough Suppressant"},
+        {Id: 1, Name: "Fever"},
+        {Id: 2, Name: "Pain Relief"},
+        {Id: 3, Name: "Allergy Relief"},
+        {Id: 4, Name: "Cough Suppressant"},
     ]);
 
     const handleSelectIndication = (selectedIndication: string) => {
-        const isAlreadySelected = selectedIndications.some(indication => indication.IndicationName === selectedIndication);
+        const isAlreadySelected = selectedIndications.some(indication => indication.Name === selectedIndication);
 
         if (!isAlreadySelected) {
-            const indication = indications.find(indication => indication.IndicationName === selectedIndication);
+            const indication = indications.find(indication => indication.Name === selectedIndication);
             if (indication) {
                 onSelectedIndications(prevSelected => [...prevSelected, indication]);
             }
@@ -41,13 +41,13 @@ export const SelectProductIndications = ({onSelectedIndications, selectedIndicat
         <div className="flex flex-col space-y-1.5">
             <div className="flex items-center space-x-1">
                 <div className="flex items-center space-x-0.5">
-                    <Asterisk className="w-4 h-4 text-red-500"/>
+                    <Asterisk className="h-4 w-4 text-red-500"/>
                     <Label>Indications</Label>
                 </div>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger type="button">
-                            <CircleHelp className="text-muted-foreground w-4 h-4"/>
+                            <CircleHelp className="h-4 w-4 text-muted-foreground"/>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Select the indications for the product</p>
@@ -72,9 +72,9 @@ export const SelectProductIndications = ({onSelectedIndications, selectedIndicat
                             .map(indication => (
                                 <SelectItem
                                     key={indication.Id}
-                                    value={indication.IndicationName}
+                                    value={indication.Name}
                                 >
-                                    {indication.IndicationName}
+                                    {indication.Name}
                                 </SelectItem>
                             ))}
                     </SelectContent>
@@ -84,10 +84,10 @@ export const SelectProductIndications = ({onSelectedIndications, selectedIndicat
                 <div className="flex items-center space-x-2">
                     {selectedIndications.map(indication => (
                         <div key={indication.Id}
-                             className="flex items-center space-x-0.5 bg-muted border rounded-full p-1 border-neutral-200">
-                            <X className="w-4 h-4 text-red-500 cursor-pointer"
+                             className="flex items-center rounded-full border border-neutral-200 p-1 space-x-0.5 bg-muted">
+                            <X className="h-4 w-4 cursor-pointer text-red-500"
                                onClick={() => handleRemoveIndication(indication)}/>
-                            <div className="text-xs ">{indication.IndicationName}</div>
+                            <div className="text-xs">{indication.Name}</div>
                         </div>
                     ))}
                 </div>

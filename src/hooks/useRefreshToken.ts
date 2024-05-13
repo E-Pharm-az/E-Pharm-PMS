@@ -1,7 +1,7 @@
 import {useContext} from "react";
 import apiClient from "../services/api-client.ts";
 import {jwtDecode} from "jwt-decode";
-import AuthContext, {TokenPayload, TokenResponse} from "@/components/context/AuthContext.tsx";
+import AuthContext, {TokenPayload, TokenResponse} from "@/context/AuthContext.tsx";
 
 const useRefreshToken = () => {
     const {setAuth} = useContext(AuthContext);

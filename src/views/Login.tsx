@@ -3,7 +3,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import AuthContext, {TokenPayload, TokenResponse} from "@/components/context/AuthContext.tsx";
+import AuthContext, {TokenPayload, TokenResponse} from "@/context/AuthContext.tsx";
 import {FormEvent, useContext, useEffect, useRef, useState} from "react";
 import apiClient from "@/services/api-client.ts";
 import {jwtDecode} from "jwt-decode";
@@ -72,12 +72,12 @@ const Login = () => {
     }
 
     return (
-        <div className="flex h-screen justify-center items-center">
+        <div className="flex h-screen items-center justify-center">
             <div>
                 {loading && (
                     <div
-                        className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-100 bg-opacity-50 z-50">
-                        <BsArrowRepeat className="animate-spin text-blue-500 mr-2"/>
+                        className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-gray-100 bg-opacity-50">
+                        <BsArrowRepeat className="mr-2 animate-spin text-blue-500"/>
                     </div>
                 )}
                 {error && <div className="text-center text-red-500">{error}</div>}
@@ -115,7 +115,7 @@ const Login = () => {
                             <Button className="w-full" type="submit">
                                 Login
                             </Button>
-                            <Link to={"/support"} className="underline text-sm">
+                            <Link to={"/support"} className="text-sm underline">
                                 Problem logging in? Contact support
                             </Link>
                         </form>

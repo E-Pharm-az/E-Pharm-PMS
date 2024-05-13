@@ -34,9 +34,9 @@ export const SelectProductWarehouse = ({onSelectedWarehouses, selectedWarehouses
         {
             id: "actions",
             cell: (cell) => (
-                <Button variant="ghost" className="h-8 w-8 p-0 -mr-8"
+                <Button variant="ghost" className="-mr-8 h-8 w-8 p-0"
                         onClick={() => handleRemoveWarehouse(cell.row.original)}>
-                    <X className="w-4 h-4"/>
+                    <X className="h-4 w-4"/>
                 </Button>
             ),
         }
@@ -78,13 +78,13 @@ export const SelectProductWarehouse = ({onSelectedWarehouses, selectedWarehouses
         <div className="flex flex-col space-y-1.5">
             <div className="flex items-center space-x-1">
                 <div className="flex items-center space-x-0.5">
-                    <Asterisk className="w-4 h-4 text-red-500"/>
+                    <Asterisk className="h-4 w-4 text-red-500"/>
                     <Label>Warehouse</Label>
                 </div>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger type="button">
-                            <CircleHelp className="text-muted-foreground w-4 h-4"/>
+                            <CircleHelp className="h-4 w-4 text-muted-foreground"/>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Select the warehouses or pharmacy where you store this product.</p>

@@ -62,7 +62,7 @@ export const SelectProductRequirement = () => {
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger type="button">
-                            <CircleHelp className="text-muted-foreground w-4 h-4"/>
+                            <CircleHelp className="h-4 w-4 text-muted-foreground"/>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p className="max-w-md">Select any Medical Considerations for this
@@ -78,7 +78,7 @@ export const SelectProductRequirement = () => {
                     <div>
                         <Button type="button" size="icon" variant="destructive"
                                 onClick={handleClearSelection}>
-                            <X className="w-4 h-4"/>
+                            <X className="h-4 w-4"/>
                         </Button>
                     </div>
                 )}

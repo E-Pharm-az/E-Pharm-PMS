@@ -6,7 +6,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger} from "@/components/ui/
 
 export interface SideEffect {
     Id: number;
-    EffectName: string;
+    Name: string;
 }
 
 interface SideEffectProps {
@@ -16,17 +16,17 @@ interface SideEffectProps {
 
 export const SelectProductSideEffects = ({onSelectedSideEffects, selectedSideEffects}: SideEffectProps) => {
     const [sideEffects, setSideEffects] = useState<SideEffect[]>([
-        {Id: 1, EffectName: "Headache"},
-        {Id: 2, EffectName: "Nausea"},
-        {Id: 3, EffectName: "Dizziness"},
-        {Id: 4, EffectName: "Fatigue"},
+        {Id: 1, Name: "Headache"},
+        {Id: 2, Name: "Nausea"},
+        {Id: 3, Name: "Dizziness"},
+        {Id: 4, Name: "Fatigue"},
     ]);
 
     const handleSelectSideEffect = (selectedEffect: string) => {
-        const isAlreadySelected = selectedSideEffects.some(effect => effect.EffectName === selectedEffect);
+        const isAlreadySelected = selectedSideEffects.some(effect => effect.Name === selectedEffect);
 
         if (!isAlreadySelected) {
-            const effect = sideEffects.find(effect => effect.EffectName === selectedEffect);
+            const effect = sideEffects.find(effect => effect.Name === selectedEffect);
             if (effect) {
                 onSelectedSideEffects(prevSelected => [...prevSelected, effect]);
             }
@@ -44,7 +44,7 @@ export const SelectProductSideEffects = ({onSelectedSideEffects, selectedSideEff
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger type="button">
-                            <CircleHelp className="text-muted-foreground w-4 h-4"/>
+                            <CircleHelp className="h-4 w-4 text-muted-foreground"/>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Select the side effects associated with the product</p>
@@ -69,9 +69,9 @@ export const SelectProductSideEffects = ({onSelectedSideEffects, selectedSideEff
                             .map(effect => (
                                 <SelectItem
                                     key={effect.Id}
-                                    value={effect.EffectName}
+                                    value={effect.Name}
                                 >
-                                    {effect.EffectName}
+                                    {effect.Name}
                                 </SelectItem>
                             ))}
                     </SelectContent>
@@ -81,10 +81,10 @@ export const SelectProductSideEffects = ({onSelectedSideEffects, selectedSideEff
                 <div className="flex items-center space-x-2">
                     {selectedSideEffects.map(effect => (
                         <div
-                            className="flex items-center space-x-0.5 bg-muted border rounded-full p-1 border-neutral-200">
-                            <X className="w-4 h-4 text-red-500 cursor-pointer"
+                            className="flex items-center rounded-full border border-neutral-200 p-1 space-x-0.5 bg-muted">
+                            <X className="h-4 w-4 cursor-pointer text-red-500"
                                onClick={() => handleRemoveSideEffect(effect)}/>
-                            <div className="text-xs ">{effect.EffectName}</div>
+                            <div className="text-xs">{effect.Name}</div>
                         </div>
                     ))}
                 </div>

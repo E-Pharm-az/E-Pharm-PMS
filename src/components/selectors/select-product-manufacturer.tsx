@@ -7,7 +7,7 @@ import {Button} from "@/components/ui/button.tsx";
 
 export interface Manufacturer {
     Id: number
-    ManufacturerName: string
+    Name: string
 }
 
 interface Props {
@@ -20,17 +20,17 @@ export const SelectProductManufacturer = ({onSelectedManufacturer, selectedManuf
         [
             {
                 Id: 1,
-                ManufacturerName: "Test Manufacturer"
+                Name: "Test Manufacturer"
             },
             {
                 Id: 2,
-                ManufacturerName: "Test Manufacturer 2"
+                Name: "Test Manufacturer 2"
             }
         ]
     );
 
     const handleSelectManufacturer = (selectedManufacturer: string) => {
-        const manufacturer = manufacturers.find(manufacturer => manufacturer.ManufacturerName === selectedManufacturer);
+        const manufacturer = manufacturers.find(manufacturer => manufacturer.Name === selectedManufacturer);
         if (manufacturer) {
             onSelectedManufacturer(manufacturer);
         }
@@ -40,13 +40,13 @@ export const SelectProductManufacturer = ({onSelectedManufacturer, selectedManuf
         <div className="flex flex-col space-y-1.5">
             <div className="flex items-center space-x-1">
                 <div className="flex items-center space-x-0.5">
-                    <Asterisk className="w-4 h-4 text-red-500"/>
+                    <Asterisk className="h-4 w-4 text-red-500"/>
                     <Label>Manufacturer</Label>
                 </div>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger type="button">
-                            <CircleHelp className="text-muted-foreground w-4 h-4"/>
+                            <CircleHelp className="h-4 w-4 text-muted-foreground"/>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Select the manufacturer for the product.</p>
@@ -70,9 +70,9 @@ export const SelectProductManufacturer = ({onSelectedManufacturer, selectedManuf
                             {manufacturers.map(manufacturer => (
                                 <SelectItem
                                     key={manufacturer.Id}
-                                    value={manufacturer.ManufacturerName}
+                                    value={manufacturer.Name}
                                 >
-                                    {manufacturer.ManufacturerName}
+                                    {manufacturer.Name}
                                 </SelectItem>
                             ))}
                         </SelectContent>

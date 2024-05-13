@@ -50,17 +50,8 @@ export function DataTable<TData, TValue>({columns, data, isLoading}: DataTablePr
                     ))}
                 </TableHeader>
                 <TableBody>
-                    {!isLoading ?
-                        (table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
+                    {isLoading ?
+                        (
                             <>
                                 <TableRow>
                                     <TableCell colSpan={columns.length} className="text-center">
@@ -78,6 +69,16 @@ export function DataTable<TData, TValue>({columns, data, isLoading}: DataTablePr
                                     </TableCell>
                                 </TableRow>
                             </>
+                        ) : (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
                         )}
                 </TableBody>
             </Table>

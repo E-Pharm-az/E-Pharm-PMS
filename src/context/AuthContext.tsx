@@ -1,4 +1,5 @@
 import {createContext, Dispatch, ReactNode, SetStateAction, useState} from "react";
+import apiClient from "@/services/api-client.ts";
 
 export interface TokenResponse {
     token: string;
@@ -41,8 +42,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return !!auth;
     };
 
-    const logout = () => {
+    const logout = async () => {
         setAuth(null);
+        await apiClient.get("/auth/logout", {withCredentials: true});
     };
 
     return (

@@ -6,7 +6,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger} from "@/components/ui/
 
 export interface DosageForm {
     Id: number;
-    FormName: string;
+    Name: string;
 }
 
 interface DosageFormsProps {
@@ -16,17 +16,17 @@ interface DosageFormsProps {
 
 export const SelectProductDosageForms = ({ onSelectedDosageForms, selectedDosageForms }: DosageFormsProps) => {
     const [dosageForms, setDosageForms] = useState<DosageForm[]>([
-        { Id: 1, FormName: "Tablet" },
-        { Id: 2, FormName: "Capsule" },
-        { Id: 3, FormName: "Liquid" },
-        { Id: 4, FormName: "Injection" },
+        { Id: 1, Name: "Tablet" },
+        { Id: 2, Name: "Capsule" },
+        { Id: 3, Name: "Liquid" },
+        { Id: 4, Name: "Injection" },
     ]);
 
     const handleSelectDosageForm = (selectedForm: string) => {
-        const isAlreadySelected = selectedDosageForms.some(form => form.FormName === selectedForm);
+        const isAlreadySelected = selectedDosageForms.some(form => form.Name === selectedForm);
 
         if (!isAlreadySelected) {
-            const form = dosageForms.find(form => form.FormName === selectedForm);
+            const form = dosageForms.find(form => form.Name === selectedForm);
             if (form) {
                 onSelectedDosageForms(prevSelected => [...prevSelected, form]);
             }
@@ -41,13 +41,13 @@ export const SelectProductDosageForms = ({ onSelectedDosageForms, selectedDosage
         <div className="flex flex-col space-y-1.5">
             <div className="flex items-center space-x-1">
                 <div className="flex items-center space-x-0.5">
-                    <Asterisk className="w-4 h-4 text-red-500" />
+                    <Asterisk className="h-4 w-4 text-red-500" />
                     <Label>Dosage Forms</Label>
                 </div>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger type="button">
-                            <CircleHelp className="text-muted-foreground w-4 h-4" />
+                            <CircleHelp className="h-4 w-4 text-muted-foreground" />
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Select the dosage forms for the product</p>
@@ -72,9 +72,9 @@ export const SelectProductDosageForms = ({ onSelectedDosageForms, selectedDosage
                             .map(form => (
                                 <SelectItem
                                     key={form.Id}
-                                    value={form.FormName}
+                                    value={form.Name}
                                 >
-                                    {form.FormName}
+                                    {form.Name}
                                 </SelectItem>
                             ))}
                     </SelectContent>
@@ -83,9 +83,9 @@ export const SelectProductDosageForms = ({ onSelectedDosageForms, selectedDosage
             {selectedDosageForms.length > 0 && (
                 <div className="flex items-center space-x-2">
                     {selectedDosageForms.map(form => (
-                        <div key={form.Id} className="flex items-center space-x-0.5 bg-muted border rounded-full p-1 border-neutral-200">
-                            <X className="w-4 h-4 text-red-500 cursor-pointer" onClick={() => handleRemoveDosageForm(form)} />
-                            <div className="text-xs ">{form.FormName}</div>
+                        <div key={form.Id} className="flex items-center rounded-full border border-neutral-200 p-1 space-x-0.5 bg-muted">
+                            <X className="h-4 w-4 cursor-pointer text-red-500" onClick={() => handleRemoveDosageForm(form)} />
+                            <div className="text-xs">{form.Name}</div>
                         </div>
                     ))}
                 </div>

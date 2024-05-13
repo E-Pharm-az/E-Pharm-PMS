@@ -1,12 +1,15 @@
 import {Route, Routes} from "react-router-dom";
-import Login from "@/components/Login.tsx";
-import NotFound from "@/components/NotFound.tsx";
+import Login from "@/views/Login.tsx";
+import NotFound from "@/views/NotFound.tsx";
 import DashboardLayout from "@/components/DashboardLayout.tsx";
 import RequireAuth from "@/components/RequireAuth.tsx";
 import PersistLogin from "@/components/PersistLogin.tsx";
-import Products from "@/components/Products.tsx";
-import Dashboard from "@/components/Dashboard.tsx";
-import AddProduct from "@/components/AddProduct.tsx";
+import Products from "@/views/Products.tsx";
+import Dashboard from "@/views/Dashboard.tsx";
+import AddProduct from "@/views/AddProduct.tsx";
+import Orders from "@/views/Orders.tsx";
+import Team from "@/views/Team.tsx";
+import Analytics from "@/views/Analytics.tsx";
 
 
 function App() {
@@ -16,9 +19,12 @@ function App() {
                 <Route element={<RequireAuth/>}>
                     <Route path="/dashboard" element={<DashboardLayout/>}>
                         <Route path="" element={<Dashboard/>}/>
+                        <Route path="orders" element={<Orders/>}/>
                         <Route path="products" element={<Products/>}/>
+                        <Route path="team" element={<Team/>}/>
+                        <Route path="analytics" element={<Analytics/>}/>
+                        <Route path="add-product" element={<AddProduct/>}/>
                     </Route>
-                    <Route path="/add-product" element={<AddProduct/>}/>
                 </Route>
                 <Route path="/" element={<Login/>}/>
                 <Route path="*" element={<NotFound/>}/>

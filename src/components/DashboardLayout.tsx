@@ -17,19 +17,17 @@ import {IoIosMenu} from "react-icons/io";
 import {BiHomeAlt} from "react-icons/bi";
 import {AiOutlineLineChart} from "react-icons/ai";
 import {FaRegUserCircle} from "react-icons/fa";
-import {
-    ResizableHandle,
-    ResizablePanel,
-    ResizablePanelGroup,
-} from "@/components/ui/resizable.tsx"
+import {useContext} from "react";
+import AuthContext from "@/context/AuthContext.tsx";
 
 const DashboardLayout = () => {
     const location = useLocation();
+    const {logout} = useContext(AuthContext);
 
     return (
-        <ResizablePanelGroup className="min-h-screen w-full" direction="horizontal">
-            <ResizablePanel className="hidden border-r bg-muted/40 md:block" defaultSize={15} minSize={12} maxSize={30}>
-                <div className="flex h-full max-h-screen flex-col gap-2">
+        <div className="flex min-h-screen w-full border-8">
+            <div className="hidden border-r bg-muted/40 md:block w-[200px]  lg:min-w-[240px]">
+                <div className="flex flex-col gap-2">
                     <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                         <Link to={"/"} className="flex items-center gap-2 font-semibold">
                             <span className="text-sm">Pharma Portal</span>
@@ -86,10 +84,9 @@ const DashboardLayout = () => {
                         </nav>
                     </div>
                 </div>
-            </ResizablePanel>
-            <ResizableHandle withHandle/>
-            <ResizablePanel className="flex flex-col">
-                <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+            </div>
+            <div className="flex w-full flex-col border">
+                <header className="flex h-14 items-center gap-4 border-b px-4 bg-muted/40 lg:h-[60px] lg:px-6">
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button className="shrink-0 md:hidden" size="icon" variant="outline">
@@ -151,9 +148,9 @@ const DashboardLayout = () => {
                     <div className="w-full flex-1">
                         <form>
                             <div className="relative">
-                                <BsSearch className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
+                                <BsSearch className="absolute h-4 w-4 left-2.5 top-2.5 text-muted-foreground"/>
                                 <Input type="search"
-                                       className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
+                                       className="w-full appearance-none pl-8 shadow-none bg-background md:w-2/3 lg:w-1/3"
                                        placeholder="Search products..."
                                 />
                             </div>
@@ -172,15 +169,15 @@ const DashboardLayout = () => {
                             <DropdownMenuItem>Settings</DropdownMenuItem>
                             <DropdownMenuItem>Support</DropdownMenuItem>
                             <DropdownMenuSeparator/>
-                            <DropdownMenuItem>Logout</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </header>
-                <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+                <main className="flex flex-1 overflow-y-scroll flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                     <Outlet/>
                 </main>
-            </ResizablePanel>
-        </ResizablePanelGroup>
+            </div>
+        </div>
     );
 };
 
