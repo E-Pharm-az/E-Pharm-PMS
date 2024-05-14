@@ -1,42 +1,47 @@
-import {useContext, useEffect, useState} from "react";
+import { useContext, useEffect, useState } from "react";
 import useRefreshToken from "@/hooks/useRefreshToken.ts";
 import AuthContext from "@/context/AuthContext.tsx";
-import {BsArrowRepeat} from "react-icons/bs";
-import {Outlet} from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { Loader } from "lucide-react";
 
 const PersistLogin = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    const refreshToken = useRefreshToken();
-    const {auth} = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
+  const refreshToken = useRefreshToken();
+  const { auth } = useContext(AuthContext);
 
-    useEffect(() => {
-        let isMounted = true;
+  useEffect(() => {
+    let isMounted = true;
 
-        const verifyRefreshToken = async () => {
-            try {
-                await refreshToken();
-            } catch (error) {
-                console.log("Error refreshing token", error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
+    const verifyRefreshToken = async () => {
+      try {
+        await refreshToken();
+      } catch (error) {
+        console.log("Error refreshing token", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-        !auth?.tokenResponse.token && isMounted ? verifyRefreshToken() : setIsLoading(false);
+    !auth?.tokenResponse.token && isMounted
+      ? verifyRefreshToken()
+      : setIsLoading(false);
 
-        return () => {isMounted = false;}
-    }, [])
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-    return (
-        <>
-            {isLoading ?
-                <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-gray-100 bg-opacity-50">
-                    <BsArrowRepeat className="mr-2 animate-spin text-blue-500"/>
-                    <span>Loading...</span>
-                </div>
-                : <Outlet/>}
-        </>
-    );
+  return (
+    <>
+      {isLoading ? (
+        <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-gray-100 bg-opacity-50">
+          <Loader className="mr-2 animate-spin text-blue-500" />
+        </div>
+      ) : (
+        <Outlet />
+      )}
+    </>
+  );
 };
 
 export default PersistLogin;

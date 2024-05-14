@@ -1,4 +1,4 @@
-import {Route, Routes} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Login from "@/views/Login.tsx";
 import NotFound from "@/views/NotFound.tsx";
 import DashboardLayout from "@/components/DashboardLayout.tsx";
@@ -11,26 +11,25 @@ import Orders from "@/views/Orders.tsx";
 import Team from "@/views/Team.tsx";
 import Analytics from "@/views/Analytics.tsx";
 
-
 function App() {
-    return (
-        <Routes>
-            <Route element={<PersistLogin/>}>
-                <Route element={<RequireAuth/>}>
-                    <Route path="/dashboard" element={<DashboardLayout/>}>
-                        <Route path="" element={<Dashboard/>}/>
-                        <Route path="orders" element={<Orders/>}/>
-                        <Route path="products" element={<Products/>}/>
-                        <Route path="team" element={<Team/>}/>
-                        <Route path="analytics" element={<Analytics/>}/>
-                        <Route path="add-product" element={<AddProduct/>}/>
-                    </Route>
-                </Route>
-                <Route path="/" element={<Login/>}/>
-                <Route path="*" element={<NotFound/>}/>
-            </Route>
-        </Routes>
-    )
+  return (
+    <Routes>
+      <Route element={<PersistLogin />}>
+        <Route element={<RequireAuth />}>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route path="" element={<Dashboard />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="products" element={<Products />} />
+            <Route path="team" element={<Team />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="add-product" element={<AddProduct />} />
+          </Route>
+        </Route>
+        <Route path="/" element={<Login />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  );
 }
 
-export default App
+export default App;
