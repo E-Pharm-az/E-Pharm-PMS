@@ -15,9 +15,9 @@ import {
   SelectValue,
 } from "@/components/ui/select.tsx";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
-import { ProductAttribute } from "@/components/multi-select-product-attribute.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
+import { ProductAttribute } from "@/types/product-attribute-types.ts";
 
 interface SelectProductAttributeProps<T extends ProductAttribute> {
   isRequired: boolean;

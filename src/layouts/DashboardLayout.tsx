@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button.tsx";
+import { Badge } from "@/components/ui/badge.tsx";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet.tsx";
+import { Input } from "@/components/ui/input.tsx";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu.tsx";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { BsBell, BsCart, BsPeople, BsSearch } from "react-icons/bs";
 import { FiPackage } from "react-icons/fi";

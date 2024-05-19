@@ -16,11 +16,7 @@ import {
 import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
-
-export interface ProductAttribute {
-  id: number;
-  name: string;
-}
+import { ProductAttribute } from "@/types/product-attribute-types.ts";
 
 interface SelectProductAttributeProps<T extends ProductAttribute> {
   isRequired: boolean;

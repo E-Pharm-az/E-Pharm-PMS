@@ -54,7 +54,7 @@ const columns: ColumnDef<Product>[] = [
     header: "Image",
     cell: ({ row }) => (
       <img
-        className="h-10 w-10"
+        className="h-10 w-10 pointer-events-none"
         src={row.original.imageUrl}
         alt={row.original.name}
       />
@@ -62,7 +62,7 @@ const columns: ColumnDef<Product>[] = [
   },
   {
     id: "Name",
-    header: "Product Name",
+    header: "Name",
     cell: ({ row }) => row.original.name,
   },
   {

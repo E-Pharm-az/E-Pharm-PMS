@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "@/views/Login.tsx";
 import NotFound from "@/views/NotFound.tsx";
-import DashboardLayout from "@/components/DashboardLayout.tsx";
-import RequireAuth from "@/components/RequireAuth.tsx";
-import PersistLogin from "@/components/PersistLogin.tsx";
+import DashboardLayout from "@/layouts/DashboardLayout.tsx";
+import RequireAuth from "@/components/require-auth.tsx";
+import PersistLogin from "@/components/persist-login.tsx";
 import Products from "@/views/Products.tsx";
 import Dashboard from "@/views/Dashboard.tsx";
 import AddProduct from "@/views/AddProduct.tsx";
