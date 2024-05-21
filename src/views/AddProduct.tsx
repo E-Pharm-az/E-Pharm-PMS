@@ -1,14 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowLeft } from "lucide-react";
 import { AddProductDetailsCard } from "@/components/add-product-details-card.tsx";
+import { Card, CardContent } from "@/components/ui/card.tsx";
+import { AttributeSelector } from "@/components/attribute-selector.tsx";
+import { Allergy } from "@/types/product-attribute-types.ts";
 
 const StockTypeSchema = z.object({
   warehouseId: z.number(),
-  quantity: z.number(),
+  quantity: z.number().min(1, "Quantity must be at least 0"), // Should we require customers to have more than 1?
 });
 
 const schema = z.object({
@@ -24,7 +27,7 @@ const schema = z.object({
   // manufacturerId: z.number(),
   // regulatoryInformationId: z.number(),
   // activeIngredientsIds: z.array(z.number()),
-  // allergiesIds: z.array(z.number()),
+  allergiesIds: z.array(z.number()),
   // dosageFormsIds: z.array(z.number()),
   // indicationsIds: z.array(z.number()),
   // routeOfAdministrationsIds: z.array(z.number()),
@@ -48,9 +51,14 @@ const AddProduct = () => {
   const {
     register,
     handleSubmit,
+    control,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      allergiesIds: [],
+    },
   });
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
@@ -81,13 +89,28 @@ const AddProduct = () => {
           </Button>
         </div>
 
-        {/*<div className="w-full space-y-6 lg:w-1/2">*/}
-        {/*  <AddProductWarehousesCard />*/}
-        {/*  {getValues().stocks.length > 0 && <AddProductInventoryCard />}*/}
-        {/*  <AddProductPriceCard />*/}
-        {/*  <AddProductSubscriptionCard />*/}
-        {/*  <AddProductBatchDetailsCard />*/}
-        {/*</div>*/}
+        <div className="w-full space-y-6 lg:w-1/2">
+          <Card className="h-min">
+            <CardContent className="mt-4">
+              <Controller
+                name="allergiesIds"
+                control={control}
+                render={({ field }) => (
+                  <AttributeSelector<Allergy>
+                    route="/allergy"
+                    name="Allerges"
+                    selectedAttributeIds={field.value}
+                    setSelectedAttributeIds={field.onChange}
+                  />
+                )}
+              />
+            </CardContent>
+          </Card>
+          {/*{getValues().stocks?.length > 0 && <AddProductInventoryCard />}*/}
+          {/*<AddProductPriceCard />*/}
+          {/*<AddProductSubscriptionCard />*/}
+          {/*<AddProductBatchDetailsCard />*/}
+        </div>
       </form>
     </div>
   );
