@@ -216,8 +216,8 @@ const DashboardLayout = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
-        <main className="flex flex-1 flex-col overflow-y-scroll">
-          <ScrollArea className="h-full w-full">
+        <main className="flex flex-1 flex-col overflow-y-scroll h-screen">
+          <ScrollArea className="flex-1 h-full w-full">
             <Outlet />
           </ScrollArea>
         </main>

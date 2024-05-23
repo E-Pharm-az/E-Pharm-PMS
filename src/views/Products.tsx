@@ -5,7 +5,16 @@ import AuthContext from "@/context/AuthContext.tsx";
 import { DataTable } from "@/components/ui/data-table.tsx";
 import { ColumnDef } from "@tanstack/react-table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx";
-import { AlertCircle, Clock, MoreHorizontal } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowUpDown,
+  Clock,
+  Copy,
+  ListFilter,
+  MoreHorizontal,
+  Plus,
+  Search,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
 import {
@@ -15,6 +24,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 
 interface Product {
   id: number;
@@ -121,6 +143,7 @@ const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedView, setSelectedView] = useState<string>("all");
 
   useEffect(() => {
     (async () => {
@@ -150,7 +173,7 @@ const Products = () => {
   const handleAddProduct = () => navigate("/dashboard/add-product");
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 h-full">
       {error && (
         <Alert
           className="fixed top-2 bg-white shadow max-w-[1200px]"
@@ -165,21 +188,76 @@ const Products = () => {
         <h1 className="text-lg font-semibold md:text-2xl">Inventory</h1>
         <Button onClick={handleAddProduct}>Add Product</Button>
       </div>
-      <div className="h-full">
-        {products.length === 0 && !loading ? (
-          <div className="flex h-full flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
-            <div className="flex flex-col items-center gap-1 text-center">
+      <div className="border rounded-md">
+        <div className="p-2 border-b flex justify-between space-x-2">
+          <div className="space-x-2 flex">
+            <ToggleGroup
+              defaultValue={selectedView}
+              onValueChange={setSelectedView}
+              size="sm"
+              type="single"
+            >
+              <ToggleGroupItem value="all">All</ToggleGroupItem>
+              <ToggleGroupItem value="active">Active</ToggleGroupItem>
+              <ToggleGroupItem value="draft">Draft</ToggleGroupItem>
+              <ToggleGroupItem value="archived">Archived</ToggleGroupItem>
+            </ToggleGroup>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="icon" variant="ghost" className="h-8 w-8">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>Create new view</DialogTitle>
+                </DialogHeader>
+                <div className="flex items-center space-x-2">
+                  <div className="grid flex-1 gap-2">
+                    <Label>Name</Label>
+                    <Input />
+                  </div>
+                </div>
+                <DialogFooter className="sm:justify-end">
+                  <DialogClose asChild>
+                    <Button type="button" variant="outline">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <Button disabled={true} type="button">
+                    Create view
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+          <div className="space-x-2 flex">
+            <Button size="sm" variant="outline" className="px-2 h-8">
+              <Search className="h-4 w-4" />
+              <ListFilter className="h-4 w-4" />
+            </Button>
+            <Button size="sm" variant="outline" className="px-2 h-8">
+              <ArrowUpDown className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+        {(loading || products.length > 0) && (
+          <DataTable columns={columns} data={products} isLoading={loading} />
+        )}
+        {products.length === 0 && !loading && (
+          <div className="w-full h-[300px] items-center justify-center flex">
+            <div className=" text-center items-center justify-center gap-1">
               <h3 className="text-2xl font-bold tracking-tight">
                 You have no products
               </h3>
               <p className="text-sm text-muted-foreground">
                 You can start selling as soon as you add a product.
               </p>
-              <Button className="mt-4">Add Product</Button>
+              <Button onClick={handleAddProduct} className="mt-4">
+                Add Product
+              </Button>
             </div>
           </div>
-        ) : (
-          <DataTable columns={columns} data={products} isLoading={loading} />
         )}
       </div>
     </div>

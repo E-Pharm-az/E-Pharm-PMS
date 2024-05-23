@@ -136,6 +136,7 @@ export const AttributeSelector = <T extends ProductAttribute>({
         <div className="w-full relative ">
           <Button
             variant="outline"
+            size="expandable"
             role="combobox"
             aria-expanded={showDropdown}
             className="w-full justify-between"
