@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/tooltip.tsx";
 import { CircleHelp } from "lucide-react";
 
-export const AddProductInventoryCard = () => {
+export const InventoryCard = () => {
   return (
     <Card className="h-min">
       <CardContent className="mt-4">

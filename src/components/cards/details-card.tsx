@@ -11,7 +11,7 @@ interface Props {
   errors: any;
 }
 
-export const AddProductDetailsCard = ({ register, errors }: Props) => {
+export const DetailsCard = ({ register, errors }: Props) => {
   const [preview, setPreview] = useState<string | null>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
   const { ref: registerRef, ...rest } = register("image");

@@ -17,12 +17,7 @@ import {
 } from "@/components/ui/select.tsx";
 import { DataTable } from "@/components/ui/data-table.tsx";
 
-export interface Warehouse {
-  Id: number;
-  Name: string;
-  Address: string;
-  ProductInventory: number;
-}
+
 
 interface Props {
   onSelectedWarehouses: (warehouses: Warehouse[]) => void;
@@ -151,13 +146,7 @@ export const SelectProductWarehouse = ({
           </Button>
         </div>
       </div>
-      {selectedWarehouses.length > 0 && (
-        <DataTable
-          columns={columns}
-          data={selectedWarehouses}
-          isLoading={false}
-        />
-      )}
+
     </div>
   );
 };

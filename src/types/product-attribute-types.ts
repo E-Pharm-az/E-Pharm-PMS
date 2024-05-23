@@ -18,3 +18,8 @@ export interface SideEffect extends ProductAttribute {}
 export interface UsageWarning extends ProductAttribute {}
 
 export interface Manufacturer extends ProductAttribute {}
+
+export interface Warehouse extends ProductAttribute {
+  Address: string;
+  ProductInventory: number;
+}

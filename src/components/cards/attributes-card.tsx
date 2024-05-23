@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils.ts";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar.tsx";
 
-export const AddProductAttributesCard = () => {
+export const AttributesCard = () => {
   return (
     <Card>
       <CardContent className="mt-4">
