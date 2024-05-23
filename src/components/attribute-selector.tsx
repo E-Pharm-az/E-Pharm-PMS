@@ -7,7 +7,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import {
-  Asterisk, Check,
+  Asterisk,
+  Check,
   ChevronsUpDown,
   CircleHelp,
   Plus,
@@ -41,10 +42,14 @@ export const AttributeSelector = <T extends ProductAttribute>({
   setSelectedAttributeIds,
 }: SelectAttributeProps) => {
   const axiosPrivate = useAxiosPrivate();
-  const [attributes, setAttributes] = useState<T[] | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [attributes, setAttributes] = useState<T[] | null>(null);
+  const [filteredAttributes, setFilteredAttributes] = useState<T[] | null>(
+    null,
+  );
   const [showDropdown, setShowDropdown] = useState<boolean>();
   const [isLoading, setIsLoading] = useState<boolean>();
+  const [query, setQuery] = useState<string>("");
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -81,6 +86,7 @@ export const AttributeSelector = <T extends ProductAttribute>({
       try {
         const response = await axiosPrivate.get<T[]>(route);
         setAttributes(response.data);
+        setFilteredAttributes(response.data);
       } catch (err) {
         console.error(err);
       } finally {
@@ -88,6 +94,15 @@ export const AttributeSelector = <T extends ProductAttribute>({
       }
     }
   };
+
+  useEffect(() => {
+    if (attributes) {
+      const result = attributes.filter((attribute) =>
+        attribute.name.toLowerCase().includes(query.toLowerCase()),
+      );
+      setFilteredAttributes(result);
+    }
+  }, [query, attributes]);
 
   const handleSelect = (attributeId: number) => {
     setSelectedAttributeIds((prevSelectedIds) => {
@@ -136,42 +151,41 @@ export const AttributeSelector = <T extends ProductAttribute>({
         <div className="w-full relative ">
           <Button
             variant="outline"
-            size="expandable"
+            size="default"
             role="combobox"
             aria-expanded={showDropdown}
-            className="w-full justify-between"
+            className="w-full h-full justify-between"
             onClick={fetchAttributes}
           >
-            <div className="flex space-x-1">
+            <div className="flex flex-wrap gap-1">
               {selectedAttributeIds.length > 0 ? (
-                <>
-                  {selectedAttributeIds.map((id) => (
-                    <div
-                      key={id}
-                      className="text-sm px-2 py-1 border rounded-full flex items-center space-x-1"
-                      onClick={(e) => e.stopPropagation()} // Prevent click on button
-                      onMouseEnter={(e) => e.stopPropagation()} // Prevent hover on button
-                    >
-                      <p>
-                        {
-                          attributes?.find((attribute) => attribute.id === id)
-                              ?.name
-                        }
-                      </p>
-                      <X
-                        className="w-4 h-4 hover:cursor-pointer opacity-50 hover:opacity-100 transition"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent click on button
-                          handleRemove(id);
-                        }}
-                      />
-                    </div>
-                  ))}
-                </>
+                selectedAttributeIds.map((id) => (
+                  <div
+                    key={id}
+                    className="text-xs px-2 py-1 border rounded-full flex items-center space-x-1"
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseEnter={(e) => e.stopPropagation()}
+                  >
+                    <p className="whitespace-nowrap">
+                      {
+                        attributes?.find((attribute) => attribute.id === id)
+                          ?.name
+                      }
+                    </p>
+                    <X
+                      className="w-4 h-4 hover:cursor-pointer opacity-50 hover:opacity-100 transition"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemove(id);
+                      }}
+                    />
+                  </div>
+                ))
               ) : (
                 <p>Select {name}</p>
               )}
             </div>
+
             <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
           </Button>
           {showDropdown && (
@@ -181,6 +195,8 @@ export const AttributeSelector = <T extends ProductAttribute>({
                 <input
                   placeholder={`Search ${name}`}
                   className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                 />
               </div>
               <div className="p-1 max-h-[300px] overflow-y-auto overflow-x-hidden">
@@ -191,22 +207,18 @@ export const AttributeSelector = <T extends ProductAttribute>({
                     <Skeleton className="h-5 w-full" />
                   </div>
                 ) : (
-                  <>
-                    {attributes?.map((attribute) => (
-                      <div
-                        onClick={() => handleSelect(attribute.id)}
-                        className="text-sm font-medium text-foreground hover:bg-muted px-2 py-1 rounded hover:cursor-pointer flex items-center space-x-2"
-                        key={attribute.id}
-                      >
-                        {selectedAttributeIds.find((id) => id === attribute.id) && (
-                            <Check className="h-4 w-4"/>
-                        )}
-                        <p>
-                          {attribute.name}
-                        </p>
-                      </div>
-                    ))}
-                  </>
+                  filteredAttributes?.map((attribute) => (
+                    <div
+                      onClick={() => handleSelect(attribute.id)}
+                      className="text-sm font-medium text-foreground hover:bg-muted px-2 py-1 rounded hover:cursor-pointer flex items-center space-x-2"
+                      key={attribute.id}
+                    >
+                      {selectedAttributeIds.find(
+                        (id) => id === attribute.id,
+                      ) && <Check className="h-4 w-4" />}
+                      <p>{attribute.name}</p>
+                    </div>
+                  ))
                 )}
               </div>
             </div>

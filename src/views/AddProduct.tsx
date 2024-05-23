@@ -3,7 +3,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button.tsx";
-import { ArrowLeft } from "lucide-react";
+import {ArrowLeft, Car} from "lucide-react";
 import { AddProductDetailsCard } from "@/components/add-product-details-card.tsx";
 import { Card, CardContent } from "@/components/ui/card.tsx";
 import { AttributeSelector } from "@/components/attribute-selector.tsx";
