@@ -20,15 +20,17 @@ import { ProductAttribute } from "@/types/product-attribute-types.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 
-interface SelectAttributeProps {
+interface SelectAttributeProps<T extends ProductAttribute> {
   isRequired?: boolean;
   isCreatable?: boolean;
   selectLimit?: number;
   route: string;
   name: string;
   info?: string;
+  error?: string;
   selectedAttributeIds: number[];
   setSelectedAttributeIds: Dispatch<SetStateAction<number[]>>;
+  onAttributesChange?: (attributes: T[] | null) => void; // Acts as a function to get the array of attributes from this component to the parent component
 }
 
 export const AttributeSelector = <T extends ProductAttribute>({
@@ -38,9 +40,11 @@ export const AttributeSelector = <T extends ProductAttribute>({
   route,
   name,
   info,
+  error,
   selectedAttributeIds,
   setSelectedAttributeIds,
-}: SelectAttributeProps) => {
+  onAttributesChange,
+}: SelectAttributeProps<T>) => {
   const axiosPrivate = useAxiosPrivate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [attributes, setAttributes] = useState<T[] | null>(null);
@@ -87,6 +91,9 @@ export const AttributeSelector = <T extends ProductAttribute>({
         const response = await axiosPrivate.get<T[]>(route);
         setAttributes(response.data);
         setFilteredAttributes(response.data);
+        if (onAttributesChange) {
+          onAttributesChange(response.data);
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -146,6 +153,7 @@ export const AttributeSelector = <T extends ProductAttribute>({
             </Tooltip>
           </TooltipProvider>
         )}
+        {error && <Label className="text-red-400">{error}</Label>}
       </div>
       <div className="flex space-x-2">
         <div className="w-full relative ">

@@ -8,39 +8,128 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import { CircleHelp } from "lucide-react";
+import { AttributeSelector } from "@/components/attribute-selector.tsx";
+import { Warehouse } from "@/types/product-attribute-types.ts";
+import { useEffect, useState } from "react";
+import { Control, useFieldArray } from "react-hook-form";
 
-export const InventoryCard = () => {
+interface Props {
+  register: any;
+  control: Control<any>;
+  errors: any;
+}
+
+export const InventoryCard: React.FC<Props> = ({
+  register,
+  errors,
+  control,
+}) => {
+  const [warehouses, setWarehouses] = useState<Warehouse[] | null>(null);
+  const [selectedWarehousesIds, setSelectedWarehousesIds] = useState<number[]>(
+    [],
+  );
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "stocks",
+  });
+
+  const handleWarehouseChange = (warehouses: Warehouse[] | null) => {
+    setWarehouses(warehouses);
+  };
+
+  useEffect(() => {
+    selectedWarehousesIds.forEach((warehouseId) => {
+      if (!fields.some((field) => field.warehouseId === warehouseId)) {
+        append({ warehouseId, quantity: 0 });
+      }
+    });
+
+    fields.forEach((field, index) => {
+      if (!selectedWarehousesIds.includes(field.warehouseId)) {
+        remove(index);
+      }
+    });
+  }, [selectedWarehousesIds, append, remove, fields]);
+
   return (
-    <Card className="h-min">
-      <CardContent className="mt-4">
-        <form className="grid w-full items-center gap-6">
-          <div className="grid w-full gap-2">
-            <Label>Inventory</Label>
-            {selectedWarehouses.map((warehouse) => (
-              <div className="flex items-center justify-between">
-                <Label>{warehouse.Name} Quantity</Label>
-                <div className="relative 1/3">
-                  <Input type="number" inputMode="numeric" placeholder="0" />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 text-muted-foreground">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger type="button">
-                          <CircleHelp className="h-4 w-4" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>
-                            Enter the product's quantity for {warehouse.Name}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+    <>
+      <Card className="h-min">
+        <CardContent className="mt-4">
+          <AttributeSelector<Warehouse>
+            route={`/warehouse/${1}/warehouse`}
+            name="Warehouse"
+            isRequired={true}
+            info={"Select a warehouse or pharmacy where this product is stored."}
+            error={errors.stocks ? errors.stocks.message : null}
+            selectedAttributeIds={selectedWarehousesIds}
+            setSelectedAttributeIds={setSelectedWarehousesIds}
+            onAttributesChange={handleWarehouseChange}
+          />
+        </CardContent>
+      </Card>
+
+      {selectedWarehousesIds.length > 0 && (
+        <Card className="h-min">
+          <CardContent className="mt-4">
+            <div className="grid w-full gap-2">
+                <Label>Inventory</Label>
+              {fields.map((field, index) => (
+                <div
+                  className="flex items-center justify-between"
+                  key={field.id}
+                >
+                  <Label>
+                    {
+                      warehouses?.find(
+                        (warehouse) => warehouse.id === field.warehouseId,
+                      )?.name
+                    }{" "}
+                    Quantity
+                  </Label>
+                  <div className="relative w-1/3">
+                    <Input
+                      type="number"
+                      inputMode="numeric"
+                      placeholder="0"
+                      {...register(`stocks.${index}.quantity`, {
+                        valueAsNumber: true,
+                      })}
+                    />
+                    <input
+                      type="hidden"
+                      {...register(`stocks.${index}.warehouseId`, {
+                        valueAsNumber: true,
+                      })}
+                      value={field.warehouseId}
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 text-muted-foreground">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger type="button">
+                            <CircleHelp className="h-4 w-4" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              Enter the product's quantity for{" "}
+                              {
+                                warehouses?.find(
+                                  (warehouse) =>
+                                    warehouse.id === field.warehouseId,
+                                )?.name
+                              }
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </>
   );
 };
