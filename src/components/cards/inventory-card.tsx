@@ -11,18 +11,13 @@ import { CircleHelp } from "lucide-react";
 import { AttributeSelector } from "@/components/attribute-selector.tsx";
 import { Warehouse } from "@/types/product-attribute-types.ts";
 import {FC, useEffect, useState} from "react";
-import { Control, useFieldArray } from "react-hook-form";
+import {Control, FieldErrors, useFieldArray, UseFormRegister} from "react-hook-form";
 import {FormData} from "@/views/AddProduct.tsx";
 
-interface Stock {
-  warehouseId: number;
-  quantity: number;
-}
-
 interface Props {
-  register: any;
-  control: Control<any>;
-  errors: any;
+  register: UseFormRegister<FormData>;
+  control: Control<FormData>;
+  errors: FieldErrors<FormData>;
 }
 
 export const InventoryCard: FC<Props> = ({
@@ -35,7 +30,7 @@ export const InventoryCard: FC<Props> = ({
     [],
   );
 
-  const { fields, append, remove } = useFieldArray<FormData>({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: "stocks",
   });
@@ -67,7 +62,7 @@ export const InventoryCard: FC<Props> = ({
             name="Warehouse"
             isRequired={true}
             info={"Select a warehouse or pharmacy where this product is stored."}
-            error={errors.stocks ? errors.stocks.message : null}
+            error={errors.stocks ? errors.stocks.message : undefined}
             selectedAttributeIds={selectedWarehousesIds}
             setSelectedAttributeIds={setSelectedWarehousesIds}
             onAttributesChange={handleWarehouseChange}

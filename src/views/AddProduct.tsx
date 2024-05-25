@@ -1,10 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import {
-  Controller,
-  SubmitHandler,
-  useFieldArray,
-  useForm,
-} from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button.tsx";
@@ -21,9 +16,9 @@ const StockTypeSchema = z.object({
 });
 
 const schema = z.object({
-  // name: z.string(),
-  // description: z.string(),
-  // image: z.any(),
+  name: z.string().min(3, "Product name should be at least (3) characters"),
+  description: z.string().max(250, "Product description should be max (250) characters"),
+  image: z.any(),
   // strengthMg: z.number(),
   // maxDayFrequency: z.number(),
   // maxSupplyInDaysDays: z.number(),
@@ -41,14 +36,14 @@ const schema = z.object({
   // usageWarningsIds: z.array(z.number()),
   // manufacturingDate: z.date(),
   // expiryDate: z.date(),
-  // price: z.number(),
-  // costPerItem: z.number(),
+  price: z.number(),
+  costPerItem: z.number(),
   stocks: z
     .array(StockTypeSchema)
     .min(1, "At least (1) warehouse should be selected."),
-  // batchNumber: z.string(),
-  // barcode: z.string(),
-  // packagingWeight: z.number(),
+  batchNumber: z.string(),
+  barcode: z.string(),
+  packagingWeight: z.number(),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -60,7 +55,6 @@ const AddProduct = () => {
     register,
     handleSubmit,
     control,
-    getValues,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
