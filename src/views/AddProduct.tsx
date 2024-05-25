@@ -51,7 +51,7 @@ const schema = z.object({
   // packagingWeight: z.number(),
 });
 
-type FormData = z.infer<typeof schema>;
+export type FormData = z.infer<typeof schema>;
 
 const AddProduct = () => {
   const navigate = useNavigate();

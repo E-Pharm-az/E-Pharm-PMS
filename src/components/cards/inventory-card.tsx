@@ -10,8 +10,14 @@ import {
 import { CircleHelp } from "lucide-react";
 import { AttributeSelector } from "@/components/attribute-selector.tsx";
 import { Warehouse } from "@/types/product-attribute-types.ts";
-import { useEffect, useState } from "react";
+import {FC, useEffect, useState} from "react";
 import { Control, useFieldArray } from "react-hook-form";
+import {FormData} from "@/views/AddProduct.tsx";
+
+interface Stock {
+  warehouseId: number;
+  quantity: number;
+}
 
 interface Props {
   register: any;
@@ -19,7 +25,7 @@ interface Props {
   errors: any;
 }
 
-export const InventoryCard: React.FC<Props> = ({
+export const InventoryCard: FC<Props> = ({
   register,
   errors,
   control,
@@ -29,7 +35,7 @@ export const InventoryCard: React.FC<Props> = ({
     [],
   );
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<FormData>({
     control,
     name: "stocks",
   });
