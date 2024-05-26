@@ -153,7 +153,6 @@ export const AttributeSelector = <T extends ProductAttribute>({
             </Tooltip>
           </TooltipProvider>
         )}
-        {error && <Label className="text-red-400">{error}</Label>}
       </div>
       <div className="flex space-x-2">
         <div className="w-full relative ">
@@ -175,10 +174,9 @@ export const AttributeSelector = <T extends ProductAttribute>({
                     onMouseEnter={(e) => e.stopPropagation()}
                   >
                     <p className="whitespace-nowrap">
-                      {
+                      {attributes &&
                         attributes?.find((attribute) => attribute.id === id)
-                          ?.name
-                      }
+                          ?.name}
                     </p>
                     <X
                       className="w-4 h-4 hover:cursor-pointer opacity-50 hover:opacity-100 transition"
@@ -228,6 +226,7 @@ export const AttributeSelector = <T extends ProductAttribute>({
                     </div>
                   ))
                 )}
+                {!isLoading && !attributes && <Label>No {name} were found.</Label>}
               </div>
             </div>
           )}
@@ -240,6 +239,7 @@ export const AttributeSelector = <T extends ProductAttribute>({
           </Button>
         )}
       </div>
+      {error && <Label className="text-red-400">{error}</Label>}
     </div>
   );
 };

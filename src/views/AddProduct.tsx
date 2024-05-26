@@ -9,6 +9,7 @@ import { PriceCard } from "@/components/cards/price-card.tsx";
 import { SubscriptionCard } from "@/components/cards/subscription-card.tsx";
 import { BatchCard } from "@/components/cards/batch-card.tsx";
 import { InventoryCard } from "@/components/cards/inventory-card.tsx";
+import {AttributesCard} from "@/components/cards/attributes-card.tsx";
 
 const StockTypeSchema = z.object({
   warehouseId: z.number(),
@@ -19,11 +20,11 @@ const schema = z.object({
   name: z.string().min(3, "Product name should be at least (3) characters"),
   description: z.string().max(250, "Product description should be max (250) characters"),
   image: z.any(),
-  // strengthMg: z.number(),
+  strengthMg: z.number(),
   // maxDayFrequency: z.number(),
   // maxSupplyInDaysDays: z.number(),
-  // contraindicationsDescription: z.string(),
-  // storageConditionDescription: z.string(),
+  contraindicationsDescription: z.string(),
+  storageConditionDescription: z.string(),
   // specialRequirementsId: z.number(),
   // manufacturerId: z.number(),
   // regulatoryInformationId: z.number(),
@@ -36,14 +37,19 @@ const schema = z.object({
   // usageWarningsIds: z.array(z.number()),
   // manufacturingDate: z.date(),
   // expiryDate: z.date(),
-  price: z.number(),
-  costPerItem: z.number(),
+  price: z.number({invalid_type_error: "Price field is required."}).positive(),
+  costPerItem: z.number({invalid_type_error: "Cost per Item field is required."}).positive(),
   stocks: z
     .array(StockTypeSchema)
     .min(1, "At least (1) warehouse should be selected."),
   batchNumber: z.string(),
   barcode: z.string(),
-  packagingWeight: z.number(),
+  packagingWeight: z.preprocess((val) => {
+    if (val === '') {
+      return undefined;
+    }
+    return val;
+  }, z.number().optional()),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -54,11 +60,19 @@ const AddProduct = () => {
   const {
     register,
     handleSubmit,
+    watch,
     control,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
+      // activeIngredientsIds: [],
+      // allergiesIds: [],
+      // dosageFormsIds: [],
+      // indicationsIds: [],
+      // routeOfAdministrationsIds: [],
+      // sideEffectsIds: [],
+      // usageWarningsIds: [],
       stocks: [],
     },
   });
@@ -86,6 +100,7 @@ const AddProduct = () => {
       >
         <div className="w-full space-y-6 lg:w-1/2">
           <DetailsCard register={register} errors={errors} />
+          <AttributesCard register={register} control={control} errors={errors} />
           <Button className="w-full" type="submit">
             save
           </Button>
@@ -97,7 +112,7 @@ const AddProduct = () => {
             control={control}
             errors={errors}
           />
-          <PriceCard register={register} errors={errors} />
+          <PriceCard register={register} control={control} watch={watch} errors={errors} />
           <SubscriptionCard />
           <BatchCard register={register} errors={errors} />
         </div>

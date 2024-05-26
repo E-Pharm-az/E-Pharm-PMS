@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { ChangeEvent, useRef, useState } from "react";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { FormData } from "@/views/AddProduct.tsx";
 
 interface Props {
-  register: any;
-  errors: any;
+  register: UseFormRegister<FormData>;
+  errors: FieldErrors<FormData>;
 }
 
 export const DetailsCard = ({ register, errors }: Props) => {
@@ -42,7 +44,9 @@ export const DetailsCard = ({ register, errors }: Props) => {
               <Label>Name</Label>
             </div>
             <Input {...register("name")} placeholder="Name of your product" />
-            {errors.name && <span>{errors.name.message}</span>}
+            {errors.name && (
+                <Label className="text-red-400">{errors.name.message}</Label>
+            )}
           </div>
 
           <div className="grid w-full gap-2">
@@ -51,7 +55,9 @@ export const DetailsCard = ({ register, errors }: Props) => {
               {...register("description")}
               placeholder="Enter your product description here."
             />
-            {errors.description && <span>{errors.description.message}</span>}
+            {errors.description && (
+                <Label className="text-red-400">{errors.description.message}</Label>
+            )}
           </div>
 
           <div className="w-full gap-2 grid">
