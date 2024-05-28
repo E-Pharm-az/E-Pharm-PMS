@@ -10,19 +10,11 @@ import {
   ArrowUpDown,
   Clock,
   ListFilter,
-  MoreHorizontal,
   Plus,
   Search,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.tsx";
 import {
   Dialog,
   DialogClose,
@@ -31,9 +23,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/dialog.tsx";
+import { Input } from "@/components/ui/input.tsx";
+import { Label } from "@/components/ui/label.tsx";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 
 interface Product {
@@ -105,39 +97,11 @@ const columns: ColumnDef<Product>[] = [
         </div>
       ),
   },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => (
-      <div className="ml-auto">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(row.original.id.toString())
-              }
-            >
-              Copy product ID
-            </DropdownMenuItem>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    ),
-  },
 ];
 
 const Products = () => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
-  const { auth } = useContext(AuthContext);
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -156,6 +120,7 @@ const Products = () => {
         setLoading(false);
       }
     })();
+
   }, []);
 
   const handleError = (errorMessage: string) => {
@@ -174,7 +139,7 @@ const Products = () => {
     <div className="p-6 space-y-6 h-full">
       {error && (
         <Alert
-          className="fixed top-2 bg-white shadow max-w-[1200px]"
+          className="fixed left-0 top-2 mx-auto right-0 bg-white shadow w-1/2"
           variant="destructive"
         >
           <AlertCircle className="h-4 w-4" />

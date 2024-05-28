@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { ChangeEvent, useRef, useState } from "react";
+import { FormData } from "@/views/product/AddProduct.tsx";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { FormData } from "@/views/AddProduct.tsx";
 
 interface Props {
   register: UseFormRegister<FormData>;
@@ -45,7 +45,7 @@ export const DetailsCard = ({ register, errors }: Props) => {
             </div>
             <Input {...register("name")} placeholder="Name of your product" />
             {errors.name && (
-                <Label className="text-red-400">{errors.name.message}</Label>
+              <Label className="text-red-400">{errors.name.message}</Label>
             )}
           </div>
 
@@ -56,7 +56,9 @@ export const DetailsCard = ({ register, errors }: Props) => {
               placeholder="Enter your product description here."
             />
             {errors.description && (
-                <Label className="text-red-400">{errors.description.message}</Label>
+              <Label className="text-red-400">
+                {errors.description.message}
+              </Label>
             )}
           </div>
 
@@ -96,7 +98,7 @@ export const DetailsCard = ({ register, errors }: Props) => {
                 </>
               )}
             </div>
-            {errors.image && <span>{errors.image.message}</span>}
+            {errors.image && <Label>{errors.image.message}</Label>}
           </div>
         </div>
       </CardContent>

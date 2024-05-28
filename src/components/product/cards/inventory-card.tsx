@@ -8,11 +8,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import { CircleHelp } from "lucide-react";
-import { AttributeSelector } from "@/components/attribute-selector.tsx";
+import { AttributeSelector } from "@/components/product/attribute-selector.tsx";
 import { Warehouse } from "@/types/product-attribute-types.ts";
 import {FC, useEffect, useState} from "react";
 import {Control, FieldErrors, useFieldArray, UseFormRegister} from "react-hook-form";
-import {FormData} from "@/views/AddProduct.tsx";
+import {FormData} from "@/views/product/AddProduct.tsx";
 
 interface Props {
   register: UseFormRegister<FormData>;

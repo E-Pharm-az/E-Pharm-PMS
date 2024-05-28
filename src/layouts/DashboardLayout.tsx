@@ -77,15 +77,15 @@ const DashboardLayout = () => {
                 Products
               </Link>
               <Link
-                to="/dashboard/team"
+                to="/dashboard/staff"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2  transition-all hover:text-primary ${
-                  location.pathname === "/dashboard/team"
+                  location.pathname === "/dashboard/staff"
                     ? "bg-muted text-primary"
                     : "text-muted-foreground"
                 }`}
               >
                 <BsPeople className="h-4 w-4" />
-                Team
+                Staff
               </Link>
               <Link
                 to={"/dashboard/analytics"}
@@ -161,15 +161,15 @@ const DashboardLayout = () => {
                   Products
                 </Link>
                 <Link
-                  to={"/dashboard/team"}
+                  to={"/dashboard/staff"}
                   className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/dashboard/team"
+                    location.pathname === "/dashboard/staff"
                       ? "bg-muted text-primary"
                       : "text-muted-foreground"
                   }`}
                 >
                   <BsPeople className="h-5 w-5" />
-                  Team
+                  Staff
                 </Link>
                 <Link
                   to={"/dashboard/analytics"}

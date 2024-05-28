@@ -1,5 +1,5 @@
 import { UseFormSetValue } from "react-hook-form";
-import { FormData } from "@/views/AddProduct";
+import { FormData } from "@/views/product/AddProduct.tsx";
 import { ChangeEvent, useState } from "react";
 
 const useFormattedInput = (

@@ -18,8 +18,8 @@ import {
   FieldErrors,
   UseFormRegister,
 } from "react-hook-form";
-import { FormData } from "@/views/AddProduct.tsx";
-import { AttributeSelector } from "@/components/attribute-selector.tsx";
+import { FormData } from "@/views/product/AddProduct.tsx";
+import { AttributeSelector } from "@/components/product/attribute-selector.tsx";
 import {
   ActiveIngredient,
   Allergy,

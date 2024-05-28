@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { SubmitHandler, useForm } from "react-hook-form";
+import {FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowLeft } from "lucide-react";
-import { DetailsCard } from "@/components/cards/details-card.tsx";
-import { PriceCard } from "@/components/cards/price-card.tsx";
-import { SubscriptionCard } from "@/components/cards/subscription-card.tsx";
-import { BatchCard } from "@/components/cards/batch-card.tsx";
-import { InventoryCard } from "@/components/cards/inventory-card.tsx";
-import {AttributesCard} from "@/components/cards/attributes-card.tsx";
+import { DetailsCard } from "@/views/product/cards/details-card.tsx";
+import { PriceCard } from "@/views/product/cards/price-card.tsx";
+import { SubscriptionCard } from "@/views/product/cards/subscription-card.tsx";
+import { BatchCard } from "@/views/product/cards/batch-card.tsx";
+import { InventoryCard } from "@/views/product/cards/inventory-card.tsx";
+import {AttributesCard} from "@/views/product/cards/attributes-card.tsx";
 
 const StockTypeSchema = z.object({
   warehouseId: z.number(),
@@ -19,7 +19,7 @@ const StockTypeSchema = z.object({
 const schema = z.object({
   name: z.string().min(3, "Product name should be at least (3) characters"),
   description: z.string().max(250, "Product description should be max (250) characters"),
-  image: z.any(),
+  image: z.instanceof(FileList),
   strengthMg: z.number(),
   // maxDayFrequency: z.number(),
   // maxSupplyInDaysDays: z.number(),
@@ -77,7 +77,7 @@ const AddProduct = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  const onSubmit: SubmitHandler<FormData> = (data: FieldValues) => {
     console.log(data);
   };
 
