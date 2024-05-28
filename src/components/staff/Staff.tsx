@@ -18,7 +18,7 @@ const Staff = () => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const [staff, setStaff] = useState<Staff[]>([]);
-  const [error, setError] = useState<string | null>(null); // Set error global and lift to Dashboard Layout
+  const [error, setError] = useState<string | null>(null); // TODO: Set error global and lift to Dashboard Layout
   const [isLoading, setIsLoading] = useState(true);
   const [selectedView, setSelectedView] = useState<string>("all");
 

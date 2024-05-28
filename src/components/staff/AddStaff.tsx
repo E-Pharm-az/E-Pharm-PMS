@@ -3,12 +3,24 @@ import { Button } from "@/components/ui/button.tsx";
 import { ArrowLeft } from "lucide-react";
 import { StaffForm } from "@/components/staff/StaffForm.tsx";
 import { FieldValues } from "react-hook-form";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 
 const AddStaff = () => {
   const navigate = useNavigate();
+  const axiosPrivate = useAxiosPrivate();
 
-  const onSubmit = (data: FieldValues) => {
+  const onSubmit = async (data: FieldValues) => {
     console.log(data);
+    console.log(JSON.stringify(data));
+
+    try {
+      await axiosPrivate.post(
+        `/user/register/${1}/pharma-manager`,
+        JSON.stringify(data),
+      );
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   return (
@@ -23,7 +35,7 @@ const AddStaff = () => {
         </Button>
         <h1 className="text-lg font-semibold md:text-2xl">Add Staff</h1>
       </div>
-      <StaffForm onSubmit={onSubmit}/>
+      <StaffForm onSubmit={onSubmit} />
     </div>
   );
 };
