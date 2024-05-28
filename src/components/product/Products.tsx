@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button.tsx";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
-import AuthContext from "@/context/AuthContext.tsx";
 import { DataTable } from "@/components/ui/data-table.tsx";
 import { ColumnDef } from "@tanstack/react-table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx";

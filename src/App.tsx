@@ -1,16 +1,16 @@
 import { Route, Routes } from "react-router-dom";
-import Login from "@/views/auth/Login.tsx";
-import NotFound from "@/views/NotFound.tsx";
 import DashboardLayout from "@/layouts/DashboardLayout.tsx";
-import RequireAuth from "@/views/auth/RequireAuth.tsx";
-import PersistLogin from "@/views/auth/PersistLogin.tsx";
-import Products from "@/views/product/Products.tsx";
-import Dashboard from "@/views/Dashboard.tsx";
-import AddProduct from "@/views/product/AddProduct.tsx";
-import Orders from "@/views/Orders.tsx";
-import Staff from "@/views/staff/Staff.tsx";
-import Analytics from "@/views/Analytics.tsx";
-import AddStaff from "@/views/staff/AddStaff.tsx";
+import PersistLogin from "@/components/auth/PersistLogin.tsx";
+import RequireAuth from "@/components/auth/RequireAuth.tsx";
+import Dashboard from "@/components/Dashboard.tsx";
+import Orders from "@/components/Orders.tsx";
+import Products from "@/components/product/Products.tsx";
+import AddProduct from "@/components/product/AddProduct.tsx";
+import Staff from "@/components/staff/Staff.tsx";
+import AddStaff from "@/components/staff/AddStaff.tsx";
+import Analytics from "@/components/Analytics.tsx";
+import Login from "@/components/auth/Login.tsx";
+import NotFound from "@/components/NotFound.tsx";
 
 function App() {
   return (

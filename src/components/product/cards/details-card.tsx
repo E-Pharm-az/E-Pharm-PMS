@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { ChangeEvent, useRef, useState } from "react";
-import { FormData } from "@/views/product/AddProduct.tsx";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
+import {FormData} from "@/components/product/AddProduct"
 
 interface Props {
   register: UseFormRegister<FormData>;

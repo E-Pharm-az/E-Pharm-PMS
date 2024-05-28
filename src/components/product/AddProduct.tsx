@@ -4,12 +4,12 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowLeft } from "lucide-react";
-import { DetailsCard } from "@/views/product/cards/details-card.tsx";
-import { PriceCard } from "@/views/product/cards/price-card.tsx";
-import { SubscriptionCard } from "@/views/product/cards/subscription-card.tsx";
-import { BatchCard } from "@/views/product/cards/batch-card.tsx";
-import { InventoryCard } from "@/views/product/cards/inventory-card.tsx";
-import {AttributesCard} from "@/views/product/cards/attributes-card.tsx";
+import {DetailsCard} from "@/components/product/cards/details-card.tsx";
+import {AttributesCard} from "@/components/product/cards/attributes-card.tsx";
+import {InventoryCard} from "@/components/product/cards/inventory-card.tsx";
+import {PriceCard} from "@/components/product/cards/price-card.tsx";
+import {SubscriptionCard} from "@/components/product/cards/subscription-card.tsx";
+import {BatchCard} from "@/components/product/cards/batch-card.tsx";
 
 const StockTypeSchema = z.object({
   warehouseId: z.number(),

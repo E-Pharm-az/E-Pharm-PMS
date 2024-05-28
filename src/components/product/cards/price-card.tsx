@@ -8,8 +8,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import { Asterisk, CircleHelp } from "lucide-react";
-import {Control, Controller, FieldErrors, UseFormRegister, UseFormWatch} from "react-hook-form";
-import { FormData } from "@/views/product/AddProduct.tsx";
+import {Control, FieldErrors, UseFormRegister, UseFormWatch} from "react-hook-form";
+import {FormData} from "@/components/product/AddProduct"
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -19,7 +19,7 @@ interface Props {
   errors: FieldErrors<FormData>;
 }
 
-export const PriceCard = ({ register, watch, control, errors }: Props) => {
+export const PriceCard = ({ register, watch, errors }: Props) => {
   const [profit, setProfit] = useState<number | null>(null);
   const [margin, setMargin] = useState<number | null>(null);
 

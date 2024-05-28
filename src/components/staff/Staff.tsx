@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button.tsx";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { ArrowUpDown, ListFilter, Search } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "@/context/AuthContext.tsx";
 import {StaffDataTable} from "@/components/staff/StaffDataTable.tsx";
 
 interface Staff {
@@ -18,7 +17,6 @@ interface Staff {
 const Staff = () => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
-  const { auth } = useContext(AuthContext);
   const [staff, setStaff] = useState<Staff[]>([]);
   const [error, setError] = useState<string | null>(null); // Set error global and lift to Dashboard Layout
   const [isLoading, setIsLoading] = useState(true);
