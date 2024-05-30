@@ -1,17 +1,24 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
-import Staff from "@/components/staff/Staff.tsx";
+import { StaffType } from "@/components/staff/Staff.tsx";
 import { DataTable } from "@/components/ui/data-table.tsx";
 
 // TODO: Add data sorting and data search to data-table component
-// TODO: If the data passed to the data table is null, it means it is loading, whilts if the array is less than 1, then there is no data.
+// TODO: If the data passed to the data table is null, it means it is loading, whiles if the array is less than 1, then there is no data.
+// TODO: Add an option to disable the datatable, for example with the data length is 0 (optional by the parent)
+// TODO: On select, there should be actions that appear on the header for the selected items.
 
 interface Props {
-  staff: Staff[];
+  staff: StaffType[];
   isLoading: boolean;
 }
 
-const columns: ColumnDef<Staff>[] = [
+const nameFilterFn = (row: any, columnId: string, filterValue: string) => {
+  const name = `${row.original.firstName} ${row.original.lastName}`.toLowerCase();
+  return name.includes(filterValue.toLowerCase());
+};
+
+const columns: ColumnDef<StaffType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -35,12 +42,29 @@ const columns: ColumnDef<Staff>[] = [
     enableHiding: false,
   },
   {
-    id: "Name",
+    id: "name",
     header: "Name",
-    cell: ({ row }) => `${row.original.firstName} ${row.original.lastName}`,
+    cell: ({ row }) => (
+        <div>
+          {row.original.firstName} {row.original.lastName}
+        </div>
+    ),
+    filterFn: nameFilterFn,
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => <div>{row.getValue("email")}</div>,
   },
 ];
 
 export const StaffDataTable = ({ staff, isLoading }: Props) => {
-  return <DataTable columns={columns} data={staff} isLoading={isLoading} />;
+  return (
+    <DataTable
+      name="staff"
+      columns={columns}
+      data={staff}
+      isLoading={isLoading}
+    />
+  );
 };
