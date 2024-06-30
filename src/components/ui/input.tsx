@@ -1,25 +1,44 @@
 import * as React from "react";
-
 import { cn } from "@/lib/utils";
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
+  ({ className, type, label, ...props }, ref) => {
     return (
-      <input
-        type={type}
-        className={cn(
-          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-          className,
-        )}
-        ref={ref}
-        {...props}
-      />
+      <div className="relative w-full">
+        <input
+          type={type}
+          className={cn(
+            "peer w-full px-3 py-2.5 text-sm text-gray-900 bg-transparent rounded-lg border border-neutral-300",
+            "focus:outline-none focus:ring-1 focus:ring-black focus:border-transparent",
+            "transition-all duration-200 ease-in-out",
+            "placeholder-transparent",
+            "disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed",
+            className,
+          )}
+          placeholder={label}
+          ref={ref}
+          {...props}
+        />
+        <label
+          className={cn(
+            "absolute left-3 -top-2.5 text-xs text-gray-600 bg-white px-1",
+            "transition-all duration-200 ease-in-out pointer-events-none",
+            "peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2",
+            "peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-black",
+          )}
+        >
+          {label}
+        </label>
+      </div>
     );
   },
 );
+
 Input.displayName = "Input";
 
 export { Input };

@@ -1,46 +1,37 @@
-import { Button } from "../ui/button.tsx";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
-import { Label } from "@/components/ui/label.tsx";
+import { useEffect, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { AxiosError } from "axios";
+import { useForm } from "react-hook-form";
+import apiClient from "@/services/api-client.ts";
 import { Input } from "@/components/ui/input.tsx";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button.tsx";
 import AuthContext, {
   TokenPayload,
   TokenResponse,
 } from "@/context/AuthContext.tsx";
-import { FormEvent, useContext, useEffect, useRef, useState } from "react";
-import apiClient from "@/services/api-client.ts";
-import { jwtDecode } from "jwt-decode";
-import { Loader } from "lucide-react";
+import ErrorContext from "@/context/ErrorContext.tsx";
+import LoaderContext from "@/context/LoaderContext.tsx";
+
+interface PasswordFormData {
+  email: string;
+  password: string;
+}
 
 const Login = () => {
   const { setAuth, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
+  const { setError } = useContext(ErrorContext);
+  const { loading, setLoading } = useContext(LoaderContext);
 
-  const emailRef = useRef<HTMLInputElement>(null);
-  const errorRef = useRef<HTMLDivElement>(null);
-
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (emailRef.current) {
-      emailRef.current.focus();
-    }
-  }, []);
-
-  useEffect(() => {
-    setError("");
-  }, [email, password]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setFocus,
+  } = useForm<PasswordFormData>();
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -48,14 +39,17 @@ const Login = () => {
     }
   }, []);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  useEffect(() => {
+    setFocus("email");
+  }, []);
+
+  const onSubmit = async (data: PasswordFormData) => {
     setLoading(true);
 
     try {
       const response = await apiClient.post<TokenResponse>(
-        "/auth/login/pharma",
-        { email, password },
+        "/auth/login/admin",
+        { email: data.email, password: data.password },
         {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
@@ -66,87 +60,66 @@ const Login = () => {
 
       setAuth({
         tokenResponse: response.data,
-        id: decodedToken.sub,
-        companyId: 1,
+        id: decodedToken.jti,
         email: decodedToken.email,
+        companyId: 1, // TODO: get company id from token
         firstname: decodedToken.sub,
       });
 
-      setEmail("");
-      setPassword("");
+      localStorage.setItem("persist", "true");
 
       navigate(from, { replace: true });
-    } catch (error: any) {
-      if (error?.response) {
-        setError("No server response");
-      } else if (error?.response?.status === 400) {
-        setError("Invalid email or password");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setError(error.message);
       } else {
-        setError("Login failed");
+        setError("An unexpected error occurred");
       }
-      errorRef.current?.focus();
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div>
-        {loading && (
-          <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-gray-100 bg-opacity-50">
-            <Loader className="animate-spin text-blue-500" />
-          </div>
-        )}
-        {error && <div className="text-center text-red-500">{error}</div>}
-
-        <Card className="mx-auto md:max-w-sm">
-          <CardHeader>
-            <CardTitle className="text-2xl">Login</CardTitle>
-            <CardDescription>
-              Enter your email below to login to your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="grid gap-4">
-              <div className="grid gap-2">
-                <Label>Email</Label>
-                <Input
-                  ref={emailRef}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@company.com"
-                  value={email}
-                  required
-                  type="email"
-                />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label>Password</Label>
-                  <Link
-                    to={"/reset-password"}
-                    className="ml-auto inline-block text-sm underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="********"
-                  value={password}
-                  required
-                  type="password"
-                />
-              </div>
-              <Button className="w-full" type="submit">
-                Login
-              </Button>
-              <Link to={"/support"} className="text-sm underline">
-                Problem logging in? Contact support
-              </Link>
-            </form>
-          </CardContent>
-        </Card>
+    <div className="mx-auto py-8 sm:py-0 w-full grid gap-6 p-6 sm:p-0 sm:w-[400px]">
+      <div className="grid gap-2">
+        <h1 className="text-3xl font-medium leading-tight tracking-tight text-gray-900">
+          Login to PMS
+        </h1>
       </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2">
+        <div className="grid gap-1">
+          <Input
+            type="email"
+            label="Email"
+            autoCorrect="off"
+            autoComplete="email"
+            disabled={loading}
+            className={errors.email && "border-red-500 focus:border-red-500"}
+            {...register("email", { required: true })}
+          />
+          <label className="w-full h-3 text-xs text-red-500">
+            {errors.email?.type === "required" && "Required"}
+          </label>
+        </div>
+        <div className="grid gap-1">
+          <Input
+            label="Password"
+            type="password"
+            autoCorrect="off"
+            autoComplete="new-password"
+            disabled={loading}
+            className={errors.password && "border-red-500 focus:border-red-500"}
+            {...register("password", { required: true })}
+          />
+          <label className="w-full h-3 text-xs text-red-500">
+            {errors.password?.type === "required" && "Required"}
+          </label>
+        </div>
+        <Button type="submit" disabled={loading}>
+          Continue
+        </Button>
+      </form>
     </div>
   );
 };
