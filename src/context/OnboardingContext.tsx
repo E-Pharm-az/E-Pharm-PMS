@@ -1,0 +1,50 @@
+import { createContext, useState, ReactNode, FC } from "react";
+import { produce } from "immer";
+
+interface FormData {
+  email: string;
+  userId: string;
+  token: string;
+  accountConfirmed: boolean;
+  pharmacyCreated: boolean;
+}
+
+const defaultFormData: FormData = {
+  email: "",
+  userId: "",
+  token: "",
+  accountConfirmed: false,
+  pharmacyCreated: false
+};
+
+interface FormContextType {
+  formData: FormData;
+  updateFormData: (data: Partial<FormData>) => void;
+}
+
+const OnboardingContext = createContext<FormContextType>({
+  formData: defaultFormData,
+  updateFormData: () => {},
+});
+
+export const OnboardingProvider: FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [formData, setFormData] = useState<FormData>(defaultFormData);
+
+  const updateFormData = (data: Partial<FormData>) => {
+    setFormData((prevData) =>
+      produce(prevData, (draft) => {
+        Object.assign(draft, data);
+      }),
+    );
+  };
+
+  return (
+    <OnboardingContext.Provider value={{ formData, updateFormData }}>
+      {children}
+    </OnboardingContext.Provider>
+  );
+};
+
+export default OnboardingContext;

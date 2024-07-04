@@ -28,7 +28,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             "absolute left-3 -top-2.5 text-xs text-gray-600 bg-white px-1",
             "transition-all duration-200 ease-in-out pointer-events-none",
-            "peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2",
+            "peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2",
             "peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-black",
           )}
         >

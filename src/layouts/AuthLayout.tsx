@@ -6,12 +6,9 @@ const AuthLayout = () => {
     <main>
       <nav className="fixed z-10 left-0 top-0 right-0 bg-white border p-2 flex px-2 sm:px-10 items-center">
         <Link to="/">
-          <div className="flex flex-shrink-0 items-center space-x-1">
+          <div className="flex flex-shrink-0 items-center gap-1">
             <img src={Logo} alt="logo" className="h-10 pointer-events-none" />
-            <h1 className="text-2xl font-medium sm:text-2xl">
-              E-Pharm{" "}
-              <span className="text-muted-foreground font-normal">PMS</span>
-            </h1>
+            <h1 className="text-2xl font-normal mb-1">PMS</h1>
           </div>
         </Link>
       </nav>
