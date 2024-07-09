@@ -2,18 +2,24 @@ import { createContext, useState, ReactNode, FC } from "react";
 import { produce } from "immer";
 
 interface FormData {
-  email: string;
   userId: string;
   token: string;
-  accountConfirmed: boolean;
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  accountCreated: boolean;
   pharmacyCreated: boolean;
 }
 
 const defaultFormData: FormData = {
-  email: "",
   userId: "",
   token: "",
-  accountConfirmed: false,
+  email: "",
+  firstName: "",
+  lastName: "",
+  password: "",
+  accountCreated: false,
   pharmacyCreated: false
 };
 

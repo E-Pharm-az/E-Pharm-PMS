@@ -35,16 +35,32 @@ const Pharmacy = () => {
   } = useForm<FormData>();
 
   useEffect(() => {
-    if (!formData.accountConfirmed) {
+    if (!formData.accountCreated) {
       navigate(from);
     }
   }, []);
 
   const onSubmit = async (data: FormData) => {
-    setLoading(true);
+    updateFormData({
+      pharmacyCreated: true,
+    });
     try {
-      await apiClient.post("/user/initialize-user", data);
-      updateFormData({ pharmacyCreated: true });
+      await apiClient.post("/pharmacy/onboard", {
+        UserRequest: {
+          FirstName: formData.firstName,
+          LastName: formData.lastName,
+          Password: formData.password,
+        },
+        PharmacyRequest: {
+          Name: data.name,
+          Tin: data.tin,
+          Email: data.email,
+          Phone: data.phone,
+          Website: data.website,
+          Address: data.address,
+        },
+      });
+      navigate("/invite-staff");
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
@@ -58,7 +74,7 @@ const Pharmacy = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
     <SlidePage>

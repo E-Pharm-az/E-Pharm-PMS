@@ -1,14 +1,16 @@
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 import Logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button.tsx";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import InitialSlidePage from "@/components/InitialSlidePage.tsx";
-import { useContext, useEffect } from "react";
-import apiClient from "@/services/api-client.ts";
-import { AxiosError } from "axios";
+import ErrorPage from "@/components/onboarding/ErrorPage.tsx";
 import ErrorContext from "@/context/ErrorContext.tsx";
 import OnboardingContext from "@/context/OnboardingContext.tsx";
+import apiClient from "@/services/api-client.ts";
+import LoaderContext from "@/context/LoaderContext.tsx";
 
-const Welcome = () => {
+const Welcome: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const search = new URLSearchParams(location.search);
@@ -17,7 +19,13 @@ const Welcome = () => {
   const from = location.state?.from?.pathname || "/";
 
   const { setError } = useContext(ErrorContext);
+  const { loading, setLoading } = useContext(LoaderContext);
   const { updateFormData } = useContext(OnboardingContext);
+
+  const [errorState, setErrorState] = useState<{
+    title: string;
+    subtitle: string;
+  } | null>(null);
 
   useEffect(() => {
     if (
@@ -28,9 +36,10 @@ const Welcome = () => {
       navigate(from);
     } else {
       (async () => {
+        setLoading(true);
         try {
           const response = await apiClient.post(
-            `/pharmacy/verify?userId=${userId}`,
+            `/pharmacy/verify?userId=${userId}&token=${token}`,
           );
           updateFormData({
             email: response.data.email,
@@ -38,20 +47,40 @@ const Welcome = () => {
             userId: userId,
           });
         } catch (error) {
-          console.log(error);
           if (error instanceof AxiosError) {
             if (error.response?.status === 404) {
-              setError(error.message);
+              setErrorState({
+                title: "Invalid Invitation",
+                subtitle:
+                  "The invitation link you've used is either invalid or has expired. Please contact your pharmacy administrator for a new invitation.",
+              });
             } else {
-              setError("No server response");
+              setErrorState({
+                title: "Server Unavailable",
+                subtitle:
+                  "We're unable to reach our servers at the moment. Please try again later or contact support if the problem persists.",
+              });
             }
           } else {
-            setError("Unexpected error");
+            setErrorState({
+              title: "Unexpected Error",
+              subtitle:
+                "An unexpected error occurred. Please try again or contact support for assistance.",
+            });
           }
+        }
+        finally {
+          setLoading(false);
         }
       })();
     }
   }, []);
+
+  if (errorState) {
+    return (
+      <ErrorPage title={errorState.title} subtitle={errorState.subtitle} />
+    );
+  }
 
   return (
     <InitialSlidePage>
@@ -64,11 +93,12 @@ const Welcome = () => {
             expand your reach, streamline operations, and boost your revenue.
           </p>
         </div>
-        <Button className="w-full" asChild>
-          <Link to="account">Lets go</Link>
+        <Button disabled={loading} className="w-full" asChild>
+          <Link to="account">Let's go</Link>
         </Button>
       </div>
     </InitialSlidePage>
   );
 };
+
 export default Welcome;

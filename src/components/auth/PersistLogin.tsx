@@ -1,15 +1,17 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import useRefreshToken from "@/hooks/useRefreshToken.ts";
 import AuthContext from "@/context/AuthContext.tsx";
 import { Outlet } from "react-router-dom";
+import LoaderContext from "@/context/LoaderContext.tsx";
 
 const PersistLogin = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const { setLoading } = useContext(LoaderContext);
   const refreshToken = useRefreshToken();
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     let isMounted = true;
+    setLoading(true);
 
     const verifyRefreshToken = async () => {
       try {
@@ -17,28 +19,20 @@ const PersistLogin = () => {
       } catch (error) {
         console.log("Error refreshing token", error);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
     !auth?.tokenResponse.token && isMounted
       ? verifyRefreshToken()
-      : setIsLoading(false);
+      : setLoading(false);
 
     return () => {
       isMounted = false;
     };
   }, []);
 
-  return (
-    <>
-      {isLoading ? (
-          <></>
-      ) : (
-        <Outlet />
-      )}
-    </>
-  );
+  return <Outlet />;
 };
 
 export default PersistLogin;

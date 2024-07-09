@@ -27,7 +27,7 @@ function App() {
       <RemoveTrailingSlash />
       <AnimatePresence mode="wait">
         <Routes key={location.pathname} location={location}>
-          <Route path="/onboarding" element={<OnboardingLayout />}>
+          <Route path="onboarding" element={<OnboardingLayout />}>
             <Route index element={<Welcome />} />
             <Route path="account" element={<Account />} />
             <Route path="pharmacy" element={<Pharmacy />} />
@@ -35,10 +35,10 @@ function App() {
             <Route path="complete" element={<Complete />} />
           </Route>
           <Route element={<AuthLayout />}>
-            <Route path="/login" element={<Login />} />
+            <Route path="login" element={<Login />} />
           </Route>
           <Route element={<PersistLogin />}>
-            <Route path="/" element={<Navigate to="/login" />} />
+            <Route index element={<Navigate to="/login" />} />
             <Route element={<RequireAuth />}>
               <Route path="/dashboard" element={<DashboardLayout />}>
                 <Route index element={<Dashboard />} />

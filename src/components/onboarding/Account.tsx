@@ -3,13 +3,7 @@ import Logo from "@/assets/logo.png";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { useForm } from "react-hook-form";
-import apiClient from "@/services/api-client.ts";
-import AuthContext, { TokenPayload } from "@/context/AuthContext.tsx";
-import { jwtDecode } from "jwt-decode";
-import {useContext, useEffect, useState} from "react";
-import ErrorContext from "@/context/ErrorContext.tsx";
-import LoaderContext from "@/context/LoaderContext.tsx";
-import axios from "axios";
+import { useContext, useEffect, useState } from "react";
 import { Eye, EyeOff, X } from "lucide-react";
 import OnboardingContext from "@/context/OnboardingContext.tsx";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -23,9 +17,6 @@ interface FormData {
 const Account = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { loading, setLoading } = useContext(LoaderContext);
-  const { setError } = useContext(ErrorContext);
-  const { setAuth } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const { formData, updateFormData } = useContext(OnboardingContext);
   const from = location.state?.from?.pathname || "/onboarding";
@@ -43,59 +34,15 @@ const Account = () => {
   }, []);
 
   const onSubmit = async (data: FormData) => {
-    setLoading(true);
+    updateFormData({
+      accountCreated: true,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      password: data.password,
+    });
 
-    try {
-      const response = await apiClient.post("/user/initialize-user", {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: formData.email,
-        password: data.password,
-      });
-
-      if (response.status === 200) {
-        const loginResponse = await apiClient.post(
-          "auth/login/store",
-          {
-            email: formData.email,
-            password: data.password,
-          },
-          {
-            withCredentials: true,
-            headers: { "Content-Type": "application/json" },
-          },
-        );
-
-        const decodedToken = jwtDecode<TokenPayload>(loginResponse.data.token);
-
-        setAuth({
-          tokenResponse: loginResponse.data,
-          id: decodedToken.jti,
-          companyId: decodedToken.companyId,
-          email: decodedToken.email,
-          firstname: decodedToken.sub,
-        });
-
-        updateFormData({ accountConfirmed: true });
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          if (error.response.status === 400) {
-            setError("Invalid email or password");
-          } else {
-            setError("No server response");
-          }
-        } else {
-          setError("Login failed");
-        }
-      } else {
-        setError("Unexpected error");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+    navigate("/onboarding/pharmacy");
+  }
 
   return (
     <SlidePage>
@@ -120,7 +67,6 @@ const Account = () => {
                 autoComplete="given-name"
                 autoCorrect="off"
                 autoCapitalize="on"
-                disabled={loading}
                 {...register("firstName", { required: "Required" })}
                 className={`${errors.firstName && "border-red-500 "}`}
               />
@@ -135,7 +81,6 @@ const Account = () => {
                 autoComplete="family-name"
                 autoCorrect="off"
                 autoCapitalize="on"
-                disabled={loading}
                 {...register("lastName", { required: "Required" })}
                 className={`${errors.lastName && "border-red-500 "}`}
               />
@@ -151,7 +96,6 @@ const Account = () => {
                 label="Password"
                 autoCorrect="off"
                 autoComplete="new-password"
-                disabled={loading}
                 {...register("password", {
                   required: true,
                   validate: {
