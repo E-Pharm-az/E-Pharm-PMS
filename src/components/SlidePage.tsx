@@ -27,6 +27,7 @@ const animations = {
 const SlidePage = ({ children }: Props) => {
   return (
     <motion.div
+      className="w-full"
       variants={animations}
       initial="initial"
       animate="animate"

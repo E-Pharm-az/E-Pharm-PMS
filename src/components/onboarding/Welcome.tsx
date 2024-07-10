@@ -1,26 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import { AxiosError } from "axios";
 import Logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button.tsx";
 import InitialSlidePage from "@/components/InitialSlidePage.tsx";
 import ErrorPage from "@/components/onboarding/ErrorPage.tsx";
-import ErrorContext from "@/context/ErrorContext.tsx";
 import OnboardingContext from "@/context/OnboardingContext.tsx";
 import apiClient from "@/services/api-client.ts";
 import LoaderContext from "@/context/LoaderContext.tsx";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
 
-const Welcome: React.FC = () => {
-  const location = useLocation();
+const Welcome = () => {
   const navigate = useNavigate();
-  const search = new URLSearchParams(location.search);
-  const userId = search.get("userId");
-  const token = search.get("token");
-  const from = location.state?.from?.pathname || "/";
-
-  const { setError } = useContext(ErrorContext);
   const { loading, setLoading } = useContext(LoaderContext);
   const { updateFormData } = useContext(OnboardingContext);
+  const { id } = useParams();
 
   const [errorState, setErrorState] = useState<{
     title: string;
@@ -28,27 +22,16 @@ const Welcome: React.FC = () => {
   } | null>(null);
 
   useEffect(() => {
-    if (
-      (token === null || userId === null) &&
-      (token !== "" || userId !== "")
-    ) {
-      setError("Invalid token");
-      navigate(from);
-    } else {
-      (async () => {
-        setLoading(true);
-        try {
-          const response = await apiClient.post(
-            `/pharmacy/verify?userId=${userId}&token=${token}`,
-          );
-          updateFormData({
-            email: response.data.email,
-            token: token,
-            userId: userId,
-          });
-        } catch (error) {
-          if (error instanceof AxiosError) {
-            if (error.response?.status === 404) {
+    (async () => {
+      setLoading(true);
+      try {
+        const response = await apiClient.post(`/pharmacy/verify?userId=${id}`);
+        updateFormData({ email: response.data.email });
+        navigate("/confirm-email");
+      } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+          if (error.response.status !== 409) {
+            if (error.response.status === 404) {
               setErrorState({
                 title: "Invalid Invitation",
                 subtitle:
@@ -61,24 +44,37 @@ const Welcome: React.FC = () => {
                   "We're unable to reach our servers at the moment. Please try again later or contact support if the problem persists.",
               });
             }
-          } else {
-            setErrorState({
-              title: "Unexpected Error",
-              subtitle:
-                "An unexpected error occurred. Please try again or contact support for assistance.",
-            });
           }
+        } else {
+          setErrorState({
+            title: "Unexpected Error",
+            subtitle:
+              "An unexpected error occurred. Please try again or contact support for assistance.",
+          });
         }
-        finally {
-          setLoading(false);
-        }
-      })();
-    }
-  }, []);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [id]);
 
   if (errorState) {
     return (
       <ErrorPage title={errorState.title} subtitle={errorState.subtitle} />
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="grid gap-12 text-center w-full">
+        <div className="w-full">
+          <Skeleton className="h-20 w-20 mx-auto mb-4" />
+          <Skeleton className="h-8 w-[400px] mx-auto mb-2" />
+          <Skeleton className="h-4 w-[200px] mx-auto mb-1" />
+          <Skeleton className="h-4 w-[300px] mx-auto" />
+        </div>
+        <Skeleton className="h-10 w-full" />
+      </div>
     );
   }
 

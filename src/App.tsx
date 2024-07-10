@@ -20,6 +20,7 @@ import Pharmacy from "@/components/onboarding/Pharmacy.tsx";
 import InviteStaff from "@/components/onboarding/InviteStaff.tsx";
 import Complete from "@/components/onboarding/Complete.tsx";
 import { AnimatePresence } from "framer-motion";
+import ConfirmEmail from "@/components/onboarding/ConfirmEmail.tsx";
 
 function App() {
   return (
@@ -27,8 +28,9 @@ function App() {
       <RemoveTrailingSlash />
       <AnimatePresence mode="wait">
         <Routes key={location.pathname} location={location}>
-          <Route path="onboarding" element={<OnboardingLayout />}>
+          <Route path="/onboarding/:id" element={<OnboardingLayout />}>
             <Route index element={<Welcome />} />
+            <Route path="confirm-email" element={<ConfirmEmail />} />
             <Route path="account" element={<Account />} />
             <Route path="pharmacy" element={<Pharmacy />} />
             <Route path="invite-staff" element={<InviteStaff />} />

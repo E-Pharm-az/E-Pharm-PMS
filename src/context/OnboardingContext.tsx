@@ -2,9 +2,9 @@ import { createContext, useState, ReactNode, FC } from "react";
 import { produce } from "immer";
 
 interface FormData {
-  userId: string;
-  token: string;
   email: string;
+  code: number;
+  isAccountConfirmed: boolean
   firstName: string;
   lastName: string;
   password: string;
@@ -13,14 +13,14 @@ interface FormData {
 }
 
 const defaultFormData: FormData = {
-  userId: "",
-  token: "",
   email: "",
+  code: 0,
+  isAccountConfirmed: false,
   firstName: "",
   lastName: "",
   password: "",
   accountCreated: false,
-  pharmacyCreated: false
+  pharmacyCreated: false,
 };
 
 interface FormContextType {

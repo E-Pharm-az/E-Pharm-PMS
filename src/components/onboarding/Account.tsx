@@ -27,11 +27,11 @@ const Account = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  useEffect(() => {
-    if (formData.email === "") {
-      navigate(from);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (formData.email === "") {
+  //     navigate(from);
+  //   }
+  // }, []);
 
   const onSubmit = async (data: FormData) => {
     updateFormData({
