@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input.tsx";
 import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
+import useOnboardingNavigation from "@/hooks/useOnboardingNavigation.ts";
 
 const TIMEOUT_SECONDS = 15;
 export const CODE_LENGTH = 6;
@@ -20,6 +21,7 @@ interface FormData {
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
+  const goToStep = useOnboardingNavigation();
   const { setError } = useContext(ErrorContext);
   const { loading, setLoading } = useContext(LoaderContext);
   const { formData, updateFormData } = useContext(OnboardingContext);
@@ -53,14 +55,15 @@ const VerifyEmail = () => {
 
   useEffect(() => {
     // require email to be on this page
-    if (!formData.email) {
-      navigate("/email-lookup");
+    if (formData.email !== "") {
+      navigate(-1);
     } else {
       (async () => {
         try {
-          await apiClient.post("/auth/resend-confirmation-email", {
-            Email: formData.email,
-          });
+          // await apiClient.post("/auth/resend-confirmation-email", {
+          //   Email: formData.email,
+          // });
+          disabledButton();
         } catch (error) {
           if (error instanceof AxiosError) {
             setError(error.message);
@@ -93,7 +96,7 @@ const VerifyEmail = () => {
         code: data.code,
       });
       updateFormData({ code: parseInt(data.code), isAccountConfirmed: true });
-      navigate("account");
+      goToStep("account");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         setError("An unexpected error occurred.");
@@ -104,49 +107,52 @@ const VerifyEmail = () => {
   };
 
   return (
-    <SlidePage>
-      <div className="grid gap-4 w-full">
-        <div>
-          <h1 className="text-3xl font-medium text-center">
-            Lets verify your email
-          </h1>
-          <p>
-            We've sent you a code to your email address. Please enter it below
-            to continue.
-          </p>
-        </div>
-        <div className="w-full px-3 py-2.5 text-sm text-muted-foreground bg-muted rounded-lg border border-neutral-300 cursor-not-allowed mb-3">
-          <p>muhammed@gmail.com{formData.email}</p>
-        </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
-          <div className="relative">
-            <Input
-              type="text"
-              label="Code"
-              autoCorrect="off"
-              autoComplete="off"
-              disabled={loading}
-              {...register("code", {
-                required: "Required",
-                validate: {
-                  minLength: (value: string) => value.length === CODE_LENGTH,
-                },
-              })}
-              className={`${errors.code && "border-red-500"}`}
-            />
-            <button
-              type="button"
-              className="absolute top-1/2 right-3 -translate-y-1/2 felx flex gap-2 focus:outline-none text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={timeoutSeconds > 0}
-              onClick={resendOTP}
-            >
-              {timeoutSeconds > 0 && <label>{timeoutSeconds}</label>}
-              <RotateCcw />
-            </button>
-          </div>
-          <Button type="submit">Continue</Button>
-        </form>
+    <SlidePage className="grid gap-4">
+      <div>
+        <h1 className="text-3xl font-medium mb-2">Lets verify your email</h1>
+        <p>
+          We've sent you a code to your email address. Please enter it below to
+          continue.
+        </p>
       </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
+        <div className="grid gap-4">
+          <div className="w-full px-3 py-2.5 text-sm text-muted-foreground bg-muted rounded-lg border border-neutral-300 cursor-not-allowed">
+            <p>muhammed@gmail.com{formData.email}</p>
+          </div>
+          <div>
+            <div className="relative">
+              <Input
+                type="text"
+                label="Code"
+                autoCorrect="off"
+                autoComplete="off"
+                disabled={loading}
+                {...register("code", {
+                  required: "Required",
+                  validate: {
+                    minLength: (value: string) => value.length === CODE_LENGTH,
+                  },
+                })}
+                className={`${errors.code && "border-red-500"}`}
+              />
+              <button
+                type="button"
+                className="absolute top-1/2 right-3 -translate-y-1/2 felx flex gap-2 focus:outline-none text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={timeoutSeconds > 0}
+                onClick={resendOTP}
+              >
+                {timeoutSeconds > 0 && <label>{timeoutSeconds}</label>}
+                <RotateCcw />
+              </button>
+            </div>
+            <p className="w-full h-3 text-xs text-red-500 border">
+              {errors.code?.message}
+            </p>
+          </div>
+        </div>
+        <Button type="submit">Continue</Button>
+      </form>
     </SlidePage>
   );
 };

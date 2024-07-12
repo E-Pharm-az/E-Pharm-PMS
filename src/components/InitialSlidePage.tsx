@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 
 interface Props {
   children: ReactNode;
+  className?: string;
 }
 
 const animations = {
@@ -16,9 +17,10 @@ const animations = {
     },
   },
 };
-const InitialSlidePage = ({ children }: Props) => {
+const InitialSlidePage = ({ children, className }: Props) => {
   return (
     <motion.div
+      className={className}
       variants={animations}
       initial="initial"
       animate="animate"

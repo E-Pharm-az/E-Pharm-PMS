@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AxiosError } from "axios";
-import Logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button.tsx";
 import InitialSlidePage from "@/components/InitialSlidePage.tsx";
 import ErrorPage from "@/components/onboarding/ErrorPage.tsx";
@@ -11,10 +10,9 @@ import LoaderContext from "@/context/LoaderContext.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 
 const Welcome = () => {
-  const navigate = useNavigate();
+  const { id } = useParams();
   const { loading, setLoading } = useContext(LoaderContext);
   const { updateFormData } = useContext(OnboardingContext);
-  const { id } = useParams();
 
   const [errorState, setErrorState] = useState<{
     title: string;
@@ -27,7 +25,6 @@ const Welcome = () => {
       try {
         const response = await apiClient.post(`/pharmacy/verify?userId=${id}`);
         updateFormData({ email: response.data.email });
-        navigate("/confirm-email");
       } catch (error) {
         if (error instanceof AxiosError && error.response) {
           if (error.response.status !== 409) {
@@ -79,20 +76,19 @@ const Welcome = () => {
   }
 
   return (
-    <InitialSlidePage>
-      <div className="grid gap-12 text-center">
-        <div>
-          <img src={Logo} alt="Logo" className="mx-auto" />
-          <h1 className="text-3xl font-medium">Welcome to E-Pharm PMS</h1>
-          <p>
-            Join the future of pharmacy management and online sales. We help you
-            expand your reach, streamline operations, and boost your revenue.
-          </p>
-        </div>
-        <Button disabled={loading} className="w-full" asChild>
-          <Link to="account">Let's go</Link>
-        </Button>
+    <InitialSlidePage className="grid gap-12">
+      <div>
+        <h1 className="text-3xl font-medium mb-2">
+          Welcome to E-Pharm Pharmacy Management System
+        </h1>
+        <p>
+          Join the future of pharmacy management and online sales. We help you
+          expand your reach, streamline operations, and boost your revenue.
+        </p>
       </div>
+      <Button disabled={loading} asChild>
+        <Link to="confirm-email">Let's go</Link>
+      </Button>
     </InitialSlidePage>
   );
 };

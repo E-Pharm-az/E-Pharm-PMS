@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 
 interface Props {
   children: ReactNode;
+  className?: string;
 }
 
 const animations = {
@@ -24,10 +25,10 @@ const animations = {
     },
   },
 };
-const SlidePage = ({ children }: Props) => {
+const SlidePage = ({ children, className }: Props) => {
   return (
     <motion.div
-      className="w-full"
+      className={`${className} w-full`}
       variants={animations}
       initial="initial"
       animate="animate"

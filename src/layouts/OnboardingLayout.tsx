@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Logo from "@/assets/logo.png";
 
-const steps = ["account", "confirm-email", "pharmacy", "invite-staff"];
+const steps = ["confirm-email", "account", "pharmacy", "invite-staff"];
 
 const OnboardingLayout = () => {
   const location = useLocation();
