@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useCallback, useContext, useEffect, useState } from "react";
 import apiClient from "@/services/api-client.ts";
 import { AxiosError } from "axios";
@@ -20,8 +19,7 @@ interface FormData {
 }
 
 const VerifyEmail = () => {
-  const navigate = useNavigate();
-  const goToStep = useOnboardingNavigation();
+  const { goToStep, goBack } = useOnboardingNavigation();
   const { setError } = useContext(ErrorContext);
   const { loading, setLoading } = useContext(LoaderContext);
   const { formData, updateFormData } = useContext(OnboardingContext);
@@ -50,19 +48,19 @@ const VerifyEmail = () => {
       });
     }, 1000);
 
-    return () => clearInterval(secondsInterval); // Cleanup on component unmount
+    return () => clearInterval(secondsInterval);
   }, [timeoutSeconds]);
 
   useEffect(() => {
     // require email to be on this page
-    if (formData.email !== "") {
-      navigate(-1);
+    if (formData.email === "") {
+      goBack();
     } else {
       (async () => {
         try {
-          // await apiClient.post("/auth/resend-confirmation-email", {
-          //   Email: formData.email,
-          // });
+          await apiClient.post("/auth/resend-confirmation-email", {
+            Email: formData.email,
+          });
           disabledButton();
         } catch (error) {
           if (error instanceof AxiosError) {
@@ -99,6 +97,8 @@ const VerifyEmail = () => {
       goToStep("account");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+        setError(error.message);
+      } else {
         setError("An unexpected error occurred.");
       }
     } finally {
@@ -118,7 +118,7 @@ const VerifyEmail = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
         <div className="grid gap-4">
           <div className="w-full px-3 py-2.5 text-sm text-muted-foreground bg-muted rounded-lg border border-neutral-300 cursor-not-allowed">
-            <p>muhammed@gmail.com{formData.email}</p>
+            <p>{formData.email}</p>
           </div>
           <div>
             <div className="relative">
@@ -146,7 +146,7 @@ const VerifyEmail = () => {
                 <RotateCcw />
               </button>
             </div>
-            <p className="w-full h-3 text-xs text-red-500 border">
+            <p className="w-full h-3 text-xs text-red-500">
               {errors.code?.message}
             </p>
           </div>

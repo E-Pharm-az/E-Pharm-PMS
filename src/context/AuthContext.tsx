@@ -17,13 +17,11 @@ export interface TokenPayload {
   jti: string;
   email: string;
   sub: string;
-  companyId: number;
 }
 
 export interface AuthUser {
   tokenResponse: TokenResponse;
   id: string;
-  companyId: number;
   email: string;
   firstname: string;
 }

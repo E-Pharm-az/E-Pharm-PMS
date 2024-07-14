@@ -6,8 +6,12 @@ import { useForm } from "react-hook-form";
 import { useContext, useEffect, useState } from "react";
 import { Eye, EyeOff, X } from "lucide-react";
 import OnboardingContext from "@/context/OnboardingContext.tsx";
-import { useLocation, useNavigate } from "react-router-dom";
 import useOnboardingNavigation from "@/hooks/useOnboardingNavigation.ts";
+import apiClient from "@/services/api-client.ts";
+import { AxiosError } from "axios";
+import ErrorContext from "@/context/ErrorContext.tsx";
+import AuthContext, { TokenPayload } from "@/context/AuthContext.tsx";
+import { jwtDecode } from "jwt-decode";
 
 interface FormData {
   firstName: string;
@@ -16,12 +20,12 @@ interface FormData {
 }
 
 const Account = () => {
-  const navigate = useNavigate();
-  const goToStep = useOnboardingNavigation();
-  const location = useLocation();
-  const [showPassword, setShowPassword] = useState(false);
+  const { goToStep, goBack } = useOnboardingNavigation();
   const { formData, updateFormData } = useContext(OnboardingContext);
-  const from = location.state?.from?.pathname || "/onboarding";
+  const { setAuth } = useContext(AuthContext);
+  const { setError } = useContext(ErrorContext);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -29,22 +33,53 @@ const Account = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  // useEffect(() => {
-  //   if (formData.email === "") {
-  //     navigate(from);
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!formData.isAccountConfirmed) {
+      goBack();
+    }
+  }, []);
 
   const onSubmit = async (data: FormData) => {
-    updateFormData({
-      accountCreated: true,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      password: data.password,
-    });
+    try {
+      await apiClient.post("/user/initialize", {
+        Code: formData.code,
+        FirstName: data.firstName,
+        LastName: data.lastName,
+        Password: data.password,
+      });
 
-    goToStep("pharmacy");
-  }
+      updateFormData({ accountCreated: true });
+
+      const response = await apiClient.post(
+        "/auth/pharmacy/login",
+        {
+          Email: formData.email,
+          Password: data.password,
+        },
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+
+      const decodedToken = jwtDecode<TokenPayload>(response.data.token);
+
+      setAuth({
+        tokenResponse: response.data,
+        id: decodedToken.jti,
+        email: decodedToken.email,
+        firstname: decodedToken.sub,
+      });
+
+      goToStep("pharmacy");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setError(error.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    }
+  };
 
   return (
     <SlidePage>

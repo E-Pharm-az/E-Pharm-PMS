@@ -9,7 +9,7 @@ import ErrorContext from "@/context/ErrorContext.tsx";
 import LoaderContext from "@/context/LoaderContext.tsx";
 import { AxiosError } from "axios";
 import OnboardingContext from "@/context/OnboardingContext.tsx";
-import { useLocation, useNavigate } from "react-router-dom";
+import useOnboardingNavigation from "@/hooks/useOnboardingNavigation.ts";
 
 interface FormData {
   name: string;
@@ -21,12 +21,10 @@ interface FormData {
 }
 
 const Pharmacy = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { goToStep, goBack } = useOnboardingNavigation();
   const { loading, setLoading } = useContext(LoaderContext);
   const { setError } = useContext(ErrorContext);
   const { formData, updateFormData } = useContext(OnboardingContext);
-  const from = location.state?.from?.pathname || "/onboarding";
 
   const {
     register,
@@ -36,7 +34,7 @@ const Pharmacy = () => {
 
   useEffect(() => {
     if (!formData.accountCreated) {
-      navigate(from);
+      goBack();
     }
   }, []);
 
@@ -45,22 +43,16 @@ const Pharmacy = () => {
       pharmacyCreated: true,
     });
     try {
-      await apiClient.post("/pharmacy/onboard", {
-        UserRequest: {
-          FirstName: formData.firstName,
-          LastName: formData.lastName,
-          Password: formData.password,
-        },
-        PharmacyRequest: {
-          Name: data.name,
-          Tin: data.tin,
-          Email: data.email,
-          Phone: data.phone,
-          Website: data.website,
-          Address: data.address,
-        },
+      await apiClient.post("/pharmacy", {
+        Name: data.name,
+        Tin: data.tin,
+        Email: data.email,
+        Phone: data.phone,
+        Website: data.website,
+        Address: data.address,
       });
-      navigate("/invite-staff");
+
+      goToStep("invite-staff");
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
@@ -74,7 +66,7 @@ const Pharmacy = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <SlidePage>

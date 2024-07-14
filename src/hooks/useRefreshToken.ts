@@ -19,7 +19,7 @@ const useRefreshToken = () => {
       return {
         tokenResponse: response.data,
         id: decodedToken.jti,
-        companyId: 3,
+        pharmacyId: 3,
         email: decodedToken.email,
         firstname: decodedToken.sub,
       };

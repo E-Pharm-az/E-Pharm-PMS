@@ -4,10 +4,7 @@ import { produce } from "immer";
 interface FormData {
   email: string;
   code: number;
-  isAccountConfirmed: boolean
-  firstName: string;
-  lastName: string;
-  password: string;
+  isAccountConfirmed: boolean;
   accountCreated: boolean;
   pharmacyCreated: boolean;
 }
@@ -16,9 +13,6 @@ const defaultFormData: FormData = {
   email: "",
   code: 0,
   isAccountConfirmed: false,
-  firstName: "",
-  lastName: "",
-  password: "",
   accountCreated: false,
   pharmacyCreated: false,
 };

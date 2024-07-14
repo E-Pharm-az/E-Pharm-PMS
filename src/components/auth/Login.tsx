@@ -62,7 +62,7 @@ const Login = () => {
         tokenResponse: response.data,
         id: decodedToken.jti,
         email: decodedToken.email,
-        companyId: 1, // TODO: get company id from token
+        pharmacyId: 1, // TODO: get company id from token
         firstname: decodedToken.sub,
       });
 
