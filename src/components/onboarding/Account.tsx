@@ -43,6 +43,7 @@ const Account = () => {
     try {
       await apiClient.post("/user/initialize", {
         Code: formData.code,
+        Email: formData.email,
         FirstName: data.firstName,
         LastName: data.lastName,
         Password: data.password,
@@ -65,8 +66,8 @@ const Account = () => {
       const decodedToken = jwtDecode<TokenPayload>(response.data.token);
 
       setAuth({
-        tokenResponse: response.data,
         id: decodedToken.jti,
+        pharmacyId: decodedToken.pharmacyId,
         email: decodedToken.email,
         firstname: decodedToken.sub,
       });
