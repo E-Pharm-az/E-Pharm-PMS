@@ -17,12 +17,10 @@ export interface TokenPayload {
   jti: string;
   email: string;
   sub: string;
-  pharmacyId: number;
 }
 
 export interface AuthUser {
   id: string;
-  pharmacyId: number;
   email: string;
   firstname: string;
 }

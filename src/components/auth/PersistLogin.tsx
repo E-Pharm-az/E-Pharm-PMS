@@ -1,13 +1,11 @@
 import { useContext, useEffect } from "react";
 import useRefreshToken from "@/hooks/useRefreshToken.ts";
-import AuthContext from "@/context/AuthContext.tsx";
 import { Outlet } from "react-router-dom";
 import LoaderContext from "@/context/LoaderContext.tsx";
 
 const PersistLogin = () => {
   const { setLoading } = useContext(LoaderContext);
   const refreshToken = useRefreshToken();
-  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     let isMounted = true;
@@ -23,9 +21,7 @@ const PersistLogin = () => {
       }
     };
 
-    !auth?.tokenResponse.token && isMounted
-      ? verifyRefreshToken()
-      : setLoading(false);
+    isMounted ? verifyRefreshToken() : setLoading(false);
 
     return () => {
       isMounted = false;

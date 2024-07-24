@@ -75,7 +75,7 @@ const Account = () => {
       goToStep("pharmacy");
     } catch (error) {
       if (error instanceof AxiosError) {
-        setError(error.message);
+        setError(error.response?.data);
       } else {
         setError("An unexpected error occurred.");
       }
@@ -125,6 +125,7 @@ const Account = () => {
                 </p>
               </div>
             </div>
+            <input className="hidden" type="email" autoComplete="username"/>
             <div className="grid gap-1">
               <div className="relative">
                 <Input

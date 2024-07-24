@@ -32,9 +32,11 @@ function App() {
             <Route index element={<Welcome />} />
             <Route path="confirm-email" element={<ConfirmEmail />} />
             <Route path="account" element={<Account />} />
-            <Route path="pharmacy" element={<Pharmacy />} />
-            <Route path="invite-staff" element={<InviteStaff />} />
-            <Route path="complete" element={<Complete />} />
+            <Route element={<PersistLogin />}>
+              <Route path="pharmacy" element={<Pharmacy />} />
+              <Route path="invite-staff" element={<InviteStaff />} />
+              <Route path="complete" element={<Complete />} />
+            </Route>
           </Route>
           <Route element={<AuthLayout />}>
             <Route path="login" element={<Login />} />

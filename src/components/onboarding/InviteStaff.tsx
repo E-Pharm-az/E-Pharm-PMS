@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Plus, X } from "lucide-react";
@@ -6,10 +6,12 @@ import SlidePage from "@/components/SlidePage.tsx";
 import Logo from "@/assets/logo.png";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import apiClient from "@/services/api-client.ts";
 import ErrorContext from "@/context/ErrorContext.tsx";
 import LoaderContext from "@/context/LoaderContext.tsx";
 import { AxiosError } from "axios";
+import OnboardingContext from "@/context/OnboardingContext.tsx";
+import useOnboardingNavigation from "@/hooks/useOnboardingNavigation.ts";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 
 interface FormData {
   emails: { email: string }[];
@@ -17,8 +19,11 @@ interface FormData {
 
 const InviteStaff = () => {
   const navigate = useNavigate();
+  const { goBack } = useOnboardingNavigation();
   const { loading, setLoading } = useContext(LoaderContext);
   const { setError } = useContext(ErrorContext);
+  const { formData } = useContext(OnboardingContext);
+  const axiosPrivate = useAxiosPrivate();
 
   const {
     control,
@@ -36,18 +41,26 @@ const InviteStaff = () => {
     name: "emails",
   });
 
+  useEffect(() => {
+    if (!formData.pharmacyCreated) {
+      goBack();
+    }
+  }, []);
+
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
       const validEmails = data.emails.filter(
         (item) => item.email.trim() !== "",
       );
-      await apiClient.post("/pharmacy/bulk-invite", { emails: validEmails });
+      if (validEmails.length > 0) {
+        await axiosPrivate.post("/pharmacy-staff/invite", { emails: validEmails });
+      }
       navigate("/dashboard");
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
-          setError(error.message);
+          setError(error.response?.data);
         } else {
           setError("No server response");
         }
@@ -82,7 +95,6 @@ const InviteStaff = () => {
                     autoCapitalize="off"
                     disabled={loading}
                     {...register(`emails.${index}.email` as const, {
-                      required: "Email is required",
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                         message: "Invalid email address",

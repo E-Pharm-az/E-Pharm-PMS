@@ -52,7 +52,6 @@ const VerifyEmail = () => {
   }, [timeoutSeconds]);
 
   useEffect(() => {
-    // require email to be on this page
     if (formData.email === "") {
       goBack();
     } else {
@@ -64,7 +63,7 @@ const VerifyEmail = () => {
           disabledButton();
         } catch (error) {
           if (error instanceof AxiosError) {
-            setError(error.message);
+            setError(error.response?.data);
           } else {
             setError("An unexpected error occurred.");
           }
@@ -97,7 +96,7 @@ const VerifyEmail = () => {
       goToStep("account");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        setError(error.message);
+        setError(error.response?.data);
       } else {
         setError("An unexpected error occurred.");
       }

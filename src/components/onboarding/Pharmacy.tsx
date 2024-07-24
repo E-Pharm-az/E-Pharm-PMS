@@ -3,13 +3,13 @@ import Logo from "@/assets/logo.png";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { useForm } from "react-hook-form";
-import apiClient from "@/services/api-client.ts";
 import { useContext, useEffect } from "react";
 import ErrorContext from "@/context/ErrorContext.tsx";
 import LoaderContext from "@/context/LoaderContext.tsx";
 import { AxiosError } from "axios";
 import OnboardingContext from "@/context/OnboardingContext.tsx";
 import useOnboardingNavigation from "@/hooks/useOnboardingNavigation.ts";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 
 interface FormData {
   name: string;
@@ -25,6 +25,7 @@ const Pharmacy = () => {
   const { loading, setLoading } = useContext(LoaderContext);
   const { setError } = useContext(ErrorContext);
   const { formData, updateFormData } = useContext(OnboardingContext);
+  const axiosPrivate = useAxiosPrivate();
 
   const {
     register,
@@ -43,7 +44,7 @@ const Pharmacy = () => {
       pharmacyCreated: true,
     });
     try {
-      await apiClient.post("/pharmacy", {
+      await axiosPrivate.post("/pharmacy", {
         Name: data.name,
         Tin: data.tin,
         Email: data.email,
@@ -55,10 +56,11 @@ const Pharmacy = () => {
       goToStep("invite-staff");
     } catch (error) {
       if (error instanceof AxiosError) {
-        if (error.response?.status === 400) {
+        if (error.response) {
+          setError(error.response?.data);
+        }
+        else {
           setError(error.message);
-        } else {
-          setError("No server response");
         }
       } else {
         setError("Unexpected error");

@@ -59,7 +59,6 @@ const Login = () => {
       const decodedToken = jwtDecode<TokenPayload>(response.data.token);
 
       setAuth({
-        tokenResponse: response.data,
         id: decodedToken.jti,
         email: decodedToken.email,
         pharmacyId: 1, // TODO: get company id from token
@@ -71,7 +70,7 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (error) {
       if (error instanceof AxiosError) {
-        setError(error.message);
+        setError(error.response?.data);
       } else {
         setError("An unexpected error occurred");
       }
