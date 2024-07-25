@@ -44,8 +44,8 @@ export const ErrorProvider: FC<{ children: ReactNode }> = ({ children }) => {
             transition={{ duration: 0.1 }}
             className="w-full fixed left-0 top-2 right-0 z-50"
           >
-            <div className="bg-red-300 border border-red-400 rounded-md mx-auto flex p-4 w-[500px] justify-between items-center">
-              <div className="flex gap-2 items-center">
+            <div className="bg-red-300 border border-red-400 rounded-md mx-auto flex p-4 w-[500px] justify-between gap-2">
+              <div className="flex gap-2">
                 <CircleAlert />
                 <p>{error}</p>
               </div>

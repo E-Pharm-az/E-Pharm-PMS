@@ -9,8 +9,11 @@ export default function useOnboardingNavigation() {
   };
 
   const goBack = () => {
+    if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
+    } else {
+      navigate(`/onboarding/${id}`);
+    }
   };
-
   return { goToStep, goBack };
 }

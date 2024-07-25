@@ -1,6 +1,6 @@
 const Complete = () => {
     return (
-        <div>OnboardingComplete</div>
+        <div>Onboarding Complete</div>
     )
 }
 export default Complete

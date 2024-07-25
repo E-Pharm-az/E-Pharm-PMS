@@ -74,7 +74,6 @@ const Pharmacy = () => {
     <SlidePage>
       <div className="grid gap-4">
         <div className="text-center">
-          <img src={Logo} alt="Logo" className="mx-auto" />
           <h1 className="text-3xl font-medium">Setup your pharmacy</h1>
           <p>
             Now, let's create your pharmacy's profile. This information will be

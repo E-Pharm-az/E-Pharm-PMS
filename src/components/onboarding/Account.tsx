@@ -67,7 +67,6 @@ const Account = () => {
 
       setAuth({
         id: decodedToken.jti,
-        pharmacyId: decodedToken.pharmacyId,
         email: decodedToken.email,
         firstname: decodedToken.sub,
       });
@@ -86,7 +85,6 @@ const Account = () => {
     <SlidePage>
       <div className="grid gap-4">
         <div className="text-center">
-          <img src={Logo} alt="Logo" className="mx-auto" />
           <h1 className="text-3xl font-medium">Create your account</h1>
           <p>
             Let's start by setting up your personal account. This will be used

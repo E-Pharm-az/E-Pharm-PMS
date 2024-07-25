@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
-import apiClient from "@/services/api-client.ts";
+import {axiosPrivate} from "@/services/api-client.ts";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import AuthContext, {
@@ -47,13 +47,9 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await apiClient.post<TokenResponse>(
-        "/auth/login/admin",
+      const response = await axiosPrivate.post<TokenResponse>(
+        "/auth/pharmacy/login",
         { email: data.email, password: data.password },
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" },
-        },
       );
 
       const decodedToken = jwtDecode<TokenPayload>(response.data.token);
@@ -61,7 +57,6 @@ const Login = () => {
       setAuth({
         id: decodedToken.jti,
         email: decodedToken.email,
-        pharmacyId: 1, // TODO: get company id from token
         firstname: decodedToken.sub,
       });
 
@@ -70,7 +65,17 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (error) {
       if (error instanceof AxiosError) {
-        setError(error.response?.data);
+        if (error.response) {
+          if (error.response.status >= 400) {
+            setError(error.response.data);
+          } else {
+            setError("We're having some technical difficulties. Please try again later or contact support if the problem persists.");
+          }
+        } else if (error.request) {
+          setError("We couldn't reach our servers. Please check your internet connection and try again.");
+        } else {
+          setError("An error occurred while setting up the request");
+        }
       } else {
         setError("An unexpected error occurred");
       }
