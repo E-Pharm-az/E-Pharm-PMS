@@ -14,7 +14,7 @@ interface PasswordFormData {
 }
 
 const Login = () => {
-  const { login, isAuthenticated, auth } = useContext(AuthContext);
+  const { login, isAuthenticated, isRefreshing } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
@@ -29,10 +29,10 @@ const Login = () => {
   } = useForm<PasswordFormData>();
 
   useEffect(() => {
-    if (isAuthenticated()) {
+    if (!isRefreshing && isAuthenticated()) {
       navigate(from, { replace: true });
     }
-  }, [auth]);
+  }, [isRefreshing, isAuthenticated, navigate, from]);
 
   useEffect(() => {
     setFocus("email");

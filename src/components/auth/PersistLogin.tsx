@@ -2,33 +2,36 @@ import { useContext, useEffect } from "react";
 import useRefreshToken from "@/hooks/useRefreshToken.ts";
 import { Outlet } from "react-router-dom";
 import AuthContext from "@/context/AuthContext.tsx";
+import ErrorContext from "@/context/ErrorContext.tsx";
 import LoaderContext from "@/context/LoaderContext.tsx";
 
 const PersistLogin = () => {
-  const { auth } = useContext(AuthContext);
-  const {setLoading} = useContext(LoaderContext);
+  const { auth, setIsRefreshing } = useContext(AuthContext);
+  const { setLoading } = useContext(LoaderContext);
+  const {setError} = useContext(ErrorContext);
   const refreshToken = useRefreshToken();
 
   useEffect(() => {
     let isMounted = true;
-    setLoading(true);
 
     const verifyRefreshToken = async () => {
+      setLoading(true);
       try {
         await refreshToken();
       } catch (error) {
-        console.log("Error refreshing token", error);
+        setError("Error authenticating. Please try again.");
       } finally {
-        isMounted && setLoading(false);
+        isMounted && setIsRefreshing(false);
+        setLoading(false);
       }
     };
 
-    !auth ? verifyRefreshToken() : setLoading(false);
+    !auth ? verifyRefreshToken() : setIsRefreshing(false);
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [auth, refreshToken, setError, setIsRefreshing]);
 
   return <Outlet />;
 };

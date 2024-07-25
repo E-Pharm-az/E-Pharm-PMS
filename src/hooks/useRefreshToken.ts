@@ -9,8 +9,10 @@ import AuthContext, {
 const useRefreshToken = () => {
   const { setAuth } = useContext(AuthContext);
 
-  const refresh = async () => {
-    const response = await axiosPrivate.get<TokenResponse>("/auth/refresh-token");
+  return async () => {
+    const response = await axiosPrivate.get<TokenResponse>(
+      "/auth/refresh-token",
+    );
 
     const decodedToken = jwtDecode<TokenPayload>(response.data.token);
 
@@ -18,11 +20,10 @@ const useRefreshToken = () => {
       id: decodedToken.jti,
       email: decodedToken.email,
       firstname: decodedToken.sub,
-    })
+    });
 
     return response.data.token;
   };
-  return refresh;
 };
 
 export default useRefreshToken;

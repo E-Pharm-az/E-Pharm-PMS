@@ -1,20 +1,22 @@
 import {Outlet, useNavigate} from "react-router-dom";
 import { useContext, useEffect } from "react";
 import AuthContext from "@/context/AuthContext.tsx";
-import LoaderContext from "@/context/LoaderContext.tsx";
 
 const RequireAuth = () => {
-  const { isAuthenticated, auth } = useContext(AuthContext);
-  const {loading} = useContext(LoaderContext);
+  const { isAuthenticated, isRefreshing } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !isAuthenticated()) {
-      navigate("/", { replace: true });
+    if (!isRefreshing && !isAuthenticated()) {
+      navigate("/login", { replace: true });
     }
-  }, [auth]);
+  }, [isRefreshing, isAuthenticated, navigate]);
 
-  return <Outlet />;
+  if (isRefreshing) {
+    return <></>;
+  }
+
+  return isAuthenticated() ? <Outlet /> : null;
 };
 
 export default RequireAuth;

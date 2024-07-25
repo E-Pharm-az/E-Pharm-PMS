@@ -2,11 +2,11 @@ import {
   createContext,
   Dispatch,
   ReactNode,
-  SetStateAction,
+  SetStateAction, useEffect,
   useState,
 } from "react";
-import apiClient, {axiosPrivate} from "@/services/api-client.ts";
-import {jwtDecode} from "jwt-decode";
+import apiClient, { axiosPrivate } from "@/services/api-client.ts";
+import { jwtDecode } from "jwt-decode";
 
 export interface TokenResponse {
   token: string;
@@ -32,6 +32,8 @@ interface AuthContextType {
   isAuthenticated: () => boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  isRefreshing: boolean;
+  setIsRefreshing: Dispatch<SetStateAction<boolean>>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -40,17 +42,23 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: () => false,
   login: () => Promise.resolve(),
   logout: () => {},
+  isRefreshing: true,
+  setIsRefreshing: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [auth, setAuth] = useState<AuthUser | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(true);
 
   const isAuthenticated = (): boolean => {
     return !!auth;
   };
 
   const login = async (email: string, password: string) => {
-    const response = await axiosPrivate.post("/auth/pharmacy/login", { email, password });
+    const response = await axiosPrivate.post("/auth/pharmacy/login", {
+      email,
+      password,
+    });
 
     const decodedToken = jwtDecode<TokenPayload>(response.data.token);
 
@@ -59,7 +67,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email: decodedToken.email,
       firstname: decodedToken.sub,
     });
-
   };
 
   const logout = async () => {
@@ -68,7 +75,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        auth,
+        setAuth,
+        isAuthenticated,
+        login,
+        logout,
+        isRefreshing,
+        setIsRefreshing,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
