@@ -1,15 +1,10 @@
 import { useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
-import {axiosPrivate} from "@/services/api-client.ts";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import AuthContext, {
-  TokenPayload,
-  TokenResponse,
-} from "@/context/AuthContext.tsx";
+import AuthContext from "@/context/AuthContext.tsx";
 import ErrorContext from "@/context/ErrorContext.tsx";
 import LoaderContext from "@/context/LoaderContext.tsx";
 
@@ -19,7 +14,7 @@ interface PasswordFormData {
 }
 
 const Login = () => {
-  const { setAuth, isAuthenticated } = useContext(AuthContext);
+  const { login, isAuthenticated, auth } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
@@ -37,7 +32,7 @@ const Login = () => {
     if (isAuthenticated()) {
       navigate(from, { replace: true });
     }
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     setFocus("email");
@@ -47,21 +42,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axiosPrivate.post<TokenResponse>(
-        "/auth/pharmacy/login",
-        { email: data.email, password: data.password },
-      );
-
-      const decodedToken = jwtDecode<TokenPayload>(response.data.token);
-
-      setAuth({
-        id: decodedToken.jti,
-        email: decodedToken.email,
-        firstname: decodedToken.sub,
-      });
-
-      localStorage.setItem("persist", "true");
-
+      await login(data.email, data.password);
       navigate(from, { replace: true });
     } catch (error) {
       if (error instanceof AxiosError) {

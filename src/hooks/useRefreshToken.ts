@@ -14,13 +14,11 @@ const useRefreshToken = () => {
 
     const decodedToken = jwtDecode<TokenPayload>(response.data.token);
 
-    setAuth(() => {
-      return {
-        id: decodedToken.jti,
-        email: decodedToken.email,
-        firstname: decodedToken.sub,
-      };
-    });
+    setAuth({
+      id: decodedToken.jti,
+      email: decodedToken.email,
+      firstname: decodedToken.sub,
+    })
 
     return response.data.token;
   };

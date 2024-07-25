@@ -41,11 +41,11 @@ const InviteStaff = () => {
     name: "emails",
   });
 
-  // useEffect(() => {
-  //   if (!formData.pharmacyCreated) {
-  //     goBack();
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!formData.pharmacyCreated) {
+      goBack();
+    }
+  }, []);
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);

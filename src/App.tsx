@@ -28,20 +28,20 @@ function App() {
       <RemoveTrailingSlash />
       <AnimatePresence mode="wait">
         <Routes key={location.pathname} location={location}>
-          <Route path="/onboarding/:id" element={<OnboardingLayout />}>
-            <Route index element={<Welcome />} />
-            <Route path="confirm-email" element={<ConfirmEmail />} />
-            <Route path="account" element={<Account />} />
-            <Route element={<PersistLogin />}>
-              <Route path="pharmacy" element={<Pharmacy />} />
-              <Route path="invite-staff" element={<InviteStaff />} />
-              <Route path="complete" element={<Complete />} />
-            </Route>
-          </Route>
-          <Route element={<AuthLayout />}>
-            <Route path="login" element={<Login />} />
-          </Route>
           <Route element={<PersistLogin />}>
+            <Route path="/onboarding/:id" element={<OnboardingLayout />}>
+              <Route index element={<Welcome />} />
+              <Route path="confirm-email" element={<ConfirmEmail />} />
+              <Route path="account" element={<Account />} />
+              <Route element={<PersistLogin />}>
+                <Route path="pharmacy" element={<Pharmacy />} />
+                <Route path="invite-staff" element={<InviteStaff />} />
+                <Route path="complete" element={<Complete />} />
+              </Route>
+            </Route>
+            <Route element={<AuthLayout />}>
+              <Route path="login" element={<Login />} />
+            </Route>
             <Route index element={<Navigate to="/login" />} />
             <Route element={<RequireAuth />}>
               <Route path="/dashboard" element={<DashboardLayout />}>

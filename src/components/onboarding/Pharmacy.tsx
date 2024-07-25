@@ -1,5 +1,4 @@
 import SlidePage from "@/components/SlidePage.tsx";
-import Logo from "@/assets/logo.png";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { useForm } from "react-hook-form";

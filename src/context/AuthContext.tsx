@@ -5,7 +5,8 @@ import {
   SetStateAction,
   useState,
 } from "react";
-import apiClient from "@/services/api-client.ts";
+import apiClient, {axiosPrivate} from "@/services/api-client.ts";
+import {jwtDecode} from "jwt-decode";
 
 export interface TokenResponse {
   token: string;
@@ -29,6 +30,7 @@ interface AuthContextType {
   auth: AuthUser | null;
   setAuth: Dispatch<SetStateAction<AuthUser | null>>;
   isAuthenticated: () => boolean;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -36,6 +38,7 @@ const AuthContext = createContext<AuthContextType>({
   auth: null,
   setAuth: () => {},
   isAuthenticated: () => false,
+  login: () => Promise.resolve(),
   logout: () => {},
 });
 
@@ -46,13 +49,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return !!auth;
   };
 
+  const login = async (email: string, password: string) => {
+    const response = await axiosPrivate.post("/auth/pharmacy/login", { email, password });
+
+    const decodedToken = jwtDecode<TokenPayload>(response.data.token);
+
+    setAuth({
+      id: decodedToken.jti,
+      email: decodedToken.email,
+      firstname: decodedToken.sub,
+    });
+
+  };
+
   const logout = async () => {
     setAuth(null);
     await apiClient.get("/auth/logout", { withCredentials: true });
   };
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, isAuthenticated, logout }}>
+    <AuthContext.Provider value={{ auth, setAuth, isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

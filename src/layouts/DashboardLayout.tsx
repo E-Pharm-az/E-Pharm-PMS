@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button.tsx";
-import { Badge } from "@/components/ui/badge.tsx";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import {
@@ -11,11 +10,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { BsBell, BsCart, BsPeople, BsSearch } from "react-icons/bs";
+import { BsBell, BsPeople, BsSearch } from "react-icons/bs";
 import { FiPackage } from "react-icons/fi";
 import { IoIosMenu } from "react-icons/io";
 import { BiHomeAlt } from "react-icons/bi";
-import { AiOutlineLineChart } from "react-icons/ai";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useContext } from "react";
 import AuthContext from "@/context/AuthContext.tsx";
@@ -52,20 +50,6 @@ const DashboardLayout = () => {
                 Dashboard
               </Link>
               <Link
-                to={"/dashboard/orders"}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2  transition-all hover:text-primary ${
-                  location.pathname === "/dashboard/orders"
-                    ? "bg-muted text-primary"
-                    : "text-muted-foreground"
-                }`}
-              >
-                <BsCart className="h-4 w-4" />
-                Orders
-                <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                  6
-                </Badge>
-              </Link>
-              <Link
                 to="/dashboard/products"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2  transition-all hover:text-primary ${
                   location.pathname === "/dashboard/products"
@@ -86,17 +70,6 @@ const DashboardLayout = () => {
               >
                 <BsPeople className="h-4 w-4" />
                 Staff
-              </Link>
-              <Link
-                to={"/dashboard/analytics"}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2  transition-all hover:text-primary ${
-                  location.pathname === "/dashboard/analytics"
-                    ? "bg-muted text-primary"
-                    : "text-muted-foreground"
-                }`}
-              >
-                <AiOutlineLineChart className="h-4 w-4" />
-                Analytics
               </Link>
             </nav>
           </div>
@@ -136,20 +109,6 @@ const DashboardLayout = () => {
                   Dashboard
                 </Link>
                 <Link
-                  to={"/dashboard/orders"}
-                  className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/dashboard/orders"
-                      ? "bg-muted text-primary"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  <BsCart className="h-5 w-5" />
-                  Orders
-                  <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                    6
-                  </Badge>
-                </Link>
-                <Link
                   to="/dashboard/products"
                   className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
                     location.pathname === "/dashboard/products"
@@ -171,17 +130,6 @@ const DashboardLayout = () => {
                   <BsPeople className="h-5 w-5" />
                   Staff
                 </Link>
-                <Link
-                  to={"/dashboard/analytics"}
-                  className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
-                    location.pathname === "/dashboard/analytics"
-                      ? "bg-muted text-primary"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  <AiOutlineLineChart className="h-5 w-5" />
-                  Analytics
-                </Link>
               </nav>
             </SheetContent>
           </Sheet>
@@ -190,6 +138,7 @@ const DashboardLayout = () => {
               <div className="relative">
                 <BsSearch className="absolute h-4 w-4 left-2.5 top-2.5 text-muted-foreground" />
                 <Input
+                  label="Search"
                   type="search"
                   className="w-full appearance-none pl-8 shadow-none bg-background md:w-2/3 lg:w-1/3"
                   placeholder="Search products..."

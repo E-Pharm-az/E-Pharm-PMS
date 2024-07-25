@@ -1,5 +1,4 @@
 import SlidePage from "@/components/SlidePage.tsx";
-import Logo from "@/assets/logo.png";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { useForm } from "react-hook-form";
@@ -10,8 +9,7 @@ import useOnboardingNavigation from "@/hooks/useOnboardingNavigation.ts";
 import apiClient from "@/services/api-client.ts";
 import { AxiosError } from "axios";
 import ErrorContext from "@/context/ErrorContext.tsx";
-import AuthContext, { TokenPayload } from "@/context/AuthContext.tsx";
-import { jwtDecode } from "jwt-decode";
+import AuthContext from "@/context/AuthContext.tsx";
 
 interface FormData {
   firstName: string;
@@ -22,7 +20,7 @@ interface FormData {
 const Account = () => {
   const { goToStep, goBack } = useOnboardingNavigation();
   const { formData, updateFormData } = useContext(OnboardingContext);
-  const { setAuth } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const { setError } = useContext(ErrorContext);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -50,26 +48,7 @@ const Account = () => {
       });
 
       updateFormData({ accountCreated: true });
-
-      const response = await apiClient.post(
-        "/auth/pharmacy/login",
-        {
-          Email: formData.email,
-          Password: data.password,
-        },
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-
-      const decodedToken = jwtDecode<TokenPayload>(response.data.token);
-
-      setAuth({
-        id: decodedToken.jti,
-        email: decodedToken.email,
-        firstname: decodedToken.sub,
-      });
+      await login(formData.email, data.password);
 
       goToStep("pharmacy");
     } catch (error) {
