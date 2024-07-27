@@ -2,7 +2,7 @@ import {
   createContext,
   Dispatch,
   ReactNode,
-  SetStateAction, useEffect,
+  SetStateAction,
   useState,
 } from "react";
 import apiClient, { axiosPrivate } from "@/services/api-client.ts";

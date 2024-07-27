@@ -3,7 +3,9 @@ export interface ProductAttribute {
   name: string;
 }
 
-export interface ActiveIngredient extends ProductAttribute {}
+export interface ActiveIngredient extends ProductAttribute {
+  description: string;
+}
 
 export interface Allergy extends ProductAttribute {}
 
@@ -20,6 +22,6 @@ export interface UsageWarning extends ProductAttribute {}
 export interface Manufacturer extends ProductAttribute {}
 
 export interface Warehouse extends ProductAttribute {
-  Address: string;
-  ProductInventory: number;
+  address: string;
+  productInventory: number;
 }

@@ -12,7 +12,7 @@ import { AttributeSelector } from "@/components/product/attribute-selector.tsx";
 import { Warehouse } from "@/types/product-attribute-types.ts";
 import {FC, useEffect, useState} from "react";
 import {Control, FieldErrors, useFieldArray, UseFormRegister} from "react-hook-form";
-import {FormData} from "@/components/product/AddProduct"
+import {FormData} from "@/components/product/NewProduct.tsx"
 
 interface Props {
   register: UseFormRegister<FormData>;

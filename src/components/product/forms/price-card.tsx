@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/tooltip.tsx";
 import { Asterisk, CircleHelp } from "lucide-react";
 import {Control, FieldErrors, UseFormRegister, UseFormWatch} from "react-hook-form";
-import {FormData} from "@/components/product/AddProduct"
+import {FormData} from "@/components/product/NewProduct.tsx"
 import { useEffect, useState } from "react";
 
 interface Props {

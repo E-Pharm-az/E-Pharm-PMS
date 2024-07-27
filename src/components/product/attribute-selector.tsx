@@ -1,4 +1,12 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import {
+  ComponentType,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 import { Label } from "@/components/ui/label.tsx";
 import {
   Tooltip,
@@ -19,23 +27,26 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 import { ProductAttribute } from "@/types/product-attribute-types.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
+import {AxiosError} from "axios";
+import ErrorContext from "@/context/ErrorContext.tsx";
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog.tsx";
 
 interface SelectAttributeProps<T extends ProductAttribute> {
   isRequired?: boolean;
-  isCreatable?: boolean;
   selectLimit?: number;
   route: string;
   name: string;
   info?: string;
   error?: string;
-  selectedAttributeIds: number[];
-  setSelectedAttributeIds: Dispatch<SetStateAction<number[]>>;
+  selectedAttributeIds: number | number[];
+  setSelectedAttributeIds: Dispatch<SetStateAction<number | number[]>>;
+  onChange: (ids: number | number[]) => void;
   onAttributesChange?: (attributes: T[] | null) => void; // Acts as a function to get the array of attributes from this component to the parent component
+  createForm?: ComponentType<{ onSubmit: (data: Partial<T>) => Promise<void> }>;
 }
 
 export const AttributeSelector = <T extends ProductAttribute>({
   isRequired = false,
-  isCreatable,
   selectLimit,
   route,
   name,
@@ -43,17 +54,53 @@ export const AttributeSelector = <T extends ProductAttribute>({
   error,
   selectedAttributeIds,
   setSelectedAttributeIds,
+  onChange,
   onAttributesChange,
+  createForm: CreateForm,
 }: SelectAttributeProps<T>) => {
   const axiosPrivate = useAxiosPrivate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [attributes, setAttributes] = useState<T[] | null>(null);
-  const [filteredAttributes, setFilteredAttributes] = useState<T[] | null>(
-    null,
-  );
+  const [filteredAttrbs, setFilteredAttrbs] = useState<T[] | null>(null);
   const [showDropdown, setShowDropdown] = useState<boolean>();
   const [isLoading, setIsLoading] = useState<boolean>();
+  const { setError } = useContext(ErrorContext);
   const [query, setQuery] = useState<string>("");
+  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
+
+  const selectedIds = Array.isArray(selectedAttributeIds)
+      ? selectedAttributeIds
+      : selectedAttributeIds ? [selectedAttributeIds] : [];
+
+  const handleCreateSubmit = async (data: Partial<T>) => {
+    try {
+      const response = await axiosPrivate.post<T>(route, data);
+      const newAttribute = response.data;
+
+      setAttributes((prev) =>
+        prev ? [...prev, newAttribute] : [newAttribute],
+      );
+
+      setSelectedAttributeIds((prev) => [...prev, newAttribute.id]);
+
+      setShowCreateModal(false);
+
+      if (onAttributesChange) {
+        onAttributesChange(
+          attributes ? [...attributes, newAttribute] : [newAttribute],
+        );
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setError(
+          error.response?.data ||
+            "An error occurred while creating the attribute",
+        );
+      } else {
+        setError("Unexpected error occurred while creating the attribute");
+      }
+    }
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -88,14 +135,24 @@ export const AttributeSelector = <T extends ProductAttribute>({
     if (attributes === null) {
       setIsLoading(true);
       try {
-        const response = await axiosPrivate.get<T[]>(route);
+        const response = await axiosPrivate.get<T[]>(
+          `${route}${CreateForm ? "/pharmacy" : ""}`,
+        );
         setAttributes(response.data);
-        setFilteredAttributes(response.data);
+        setFilteredAttrbs(response.data);
         if (onAttributesChange) {
           onAttributesChange(response.data);
         }
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          if (error.response) {
+            if (error.response.status !== 404) {
+              setError(error.response?.data);
+            }
+          }
+        } else {
+          setError("Unexpected error");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -107,31 +164,32 @@ export const AttributeSelector = <T extends ProductAttribute>({
       const result = attributes.filter((attribute) =>
         attribute.name.toLowerCase().includes(query.toLowerCase()),
       );
-      setFilteredAttributes(result);
+      setFilteredAttrbs(result);
     }
   }, [query, attributes]);
 
   const handleSelect = (attributeId: number) => {
-    setSelectedAttributeIds((prevSelectedIds) => {
-      if (prevSelectedIds.includes(attributeId)) {
-        return prevSelectedIds.filter((id) => id !== attributeId);
+    let newSelectedIds: number | number[];
+    if (selectedIds.includes(attributeId)) {
+      newSelectedIds = selectedIds.filter((id) => id !== attributeId);
+    } else {
+      if (selectLimit === 1) {
+        newSelectedIds = attributeId;
+      } else if (selectedIds.length < selectLimit) {
+        newSelectedIds = [...selectedIds, attributeId];
+      } else {
+        return;
       }
-
-      if (selectLimit !== undefined && prevSelectedIds.length >= selectLimit) {
-        if (selectLimit === 1) {
-          return [attributeId]; // Replace the single selected item
-        }
-        return prevSelectedIds; // Do nothing if limit reached
-      }
-
-      return [...prevSelectedIds, attributeId];
-    });
+    }
+    setSelectedAttributeIds(newSelectedIds);
+    onChange(newSelectedIds);
   };
 
   const handleRemove = (attributeId: number) => {
-    setSelectedAttributeIds((prevSelectedIds) =>
-      prevSelectedIds.filter((id) => id !== attributeId),
-    );
+    const newSelectedIds = selectedIds.filter((id) => id !== attributeId);
+    const result = selectLimit === 1 ? newSelectedIds[0] || null : newSelectedIds;
+    setSelectedAttributeIds(result);
+    onChange(result);
   };
 
   return (
@@ -213,7 +271,7 @@ export const AttributeSelector = <T extends ProductAttribute>({
                     <Skeleton className="h-5 w-full" />
                   </div>
                 ) : (
-                  filteredAttributes?.map((attribute) => (
+                  filteredAttrbs?.map((attribute) => (
                     <div
                       onClick={() => handleSelect(attribute.id)}
                       className="text-sm font-medium text-foreground hover:bg-muted px-2 py-1 rounded hover:cursor-pointer flex items-center space-x-2"
@@ -226,17 +284,31 @@ export const AttributeSelector = <T extends ProductAttribute>({
                     </div>
                   ))
                 )}
-                {!isLoading && !attributes && <Label>No {name} were found.</Label>}
+                {!isLoading && !attributes && (
+                  <Label>No {name} were found.</Label>
+                )}
               </div>
             </div>
           )}
         </div>
-        {/*TODO: Add a create attribute modal*/}
-        {isCreatable && (
-          <Button variant="outline">
-            <Plus className="mr-1 h-4 w-4 shrink-0" />
-            Add new
-          </Button>
+        {CreateForm && (
+          <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={() => setShowCreateModal(true)}
+              >
+                <Plus className="mr-1 h-4 w-4 shrink-0" />
+                Add new
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create new {name.toLowerCase()}</DialogTitle>
+              </DialogHeader>
+              <CreateForm onSubmit={handleCreateSubmit} />
+            </DialogContent>
+          </Dialog>
         )}
       </div>
       {error && <Label className="text-red-400">{error}</Label>}

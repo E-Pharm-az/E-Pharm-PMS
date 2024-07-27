@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import {FieldErrors, UseFormRegister} from "react-hook-form";
-import {FormData} from "@/components/product/AddProduct"
+import {FormData} from "@/components/product/NewProduct.tsx"
 
 interface Props {
   register: UseFormRegister<FormData>;

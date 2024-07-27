@@ -18,7 +18,6 @@ import {
   TableRow,
 } from "@/components/ui/table.tsx";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton.tsx";
 import {
   ArrowDown,
   ArrowUp,
@@ -36,8 +35,8 @@ import {
 } from "@/components/ui/popover.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
+import {FormInput} from "@/components/ui/form-input.tsx";
 
 interface DataTableProps<TData, TValue> {
   name: string;
@@ -46,11 +45,12 @@ interface DataTableProps<TData, TValue> {
   isLoading: boolean;
 }
 
+// TODO: Add pagination
+
 export function DataTable<TData, TValue>({
   name,
   columns,
   data,
-  isLoading,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -84,7 +84,7 @@ export function DataTable<TData, TValue>({
 
   const handleCancelSearch = () => {
     setShowSearch(false);
-    table.getColumn("name")?.setFilterValue("");
+    table.getColumn("Name")?.setFilterValue("");
     setColumnFilters((prevFilters) =>
       prevFilters.filter((filter) => filter.id !== "name"),
     );
@@ -113,13 +113,13 @@ export function DataTable<TData, TValue>({
         {showSearch && (
           <div className="relative items-center w-full">
             <BsSearch className="absolute h-3.5 w-3.5 left-2.5 top-2.5 text-muted-foreground" />
-            <Input
+            <FormInput
               placeholder={`Searching all ${name}`}
               value={
-                (table.getColumn("name")?.getFilterValue() as string) ?? ""
+                (table.getColumn("Name")?.getFilterValue() as string) ?? ""
               }
               onChange={(event) =>
-                table.getColumn("name")?.setFilterValue(event.target.value)
+                table.getColumn("Name")?.setFilterValue(event.target.value)
               }
               className="w-full h-8 appearance-none pl-8 shadow-none bg-background"
             />
@@ -154,7 +154,7 @@ export function DataTable<TData, TValue>({
             </PopoverTrigger>
             <PopoverContent className="w-40 p-3 mr-8 grid gap-3">
               <h4 className="font-medium leading-none mb-1">Sort by</h4>
-              <RadioGroup defaultValue="name">
+              <RadioGroup defaultValue="Name">
                 {columnNames.map((columnName, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <RadioGroupItem
