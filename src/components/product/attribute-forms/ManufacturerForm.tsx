@@ -1,17 +1,17 @@
 import { FC, FormEvent } from "react";
-import { ActiveIngredient } from "@/types/product-attribute-types.ts";
+import { Manufacturer} from "@/types/product-attribute-types.ts";
 import { useForm } from "react-hook-form";
 import { FormInput } from "@/components/ui/form-input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 
-export const ActiveIngredientForm: FC<{
-  onSubmit: (data: Partial<ActiveIngredient>) => Promise<void>;
+export const ManufacturerForm: FC<{
+  onSubmit: (data: Partial<Manufacturer>) => Promise<void>;
 }> = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ActiveIngredient>();
+  } = useForm<Manufacturer>();
 
   const onSubmitWrapper = (e: FormEvent) => {
     e.preventDefault();
@@ -33,8 +33,18 @@ export const ActiveIngredientForm: FC<{
       </div>
       <FormInput
         type="text"
-        {...register("description")}
-        placeholder="Description"
+        {...register("country")}
+        placeholder="Country*"
+      />
+      <FormInput
+        type="text"
+        {...register("website")}
+        placeholder="Website*"
+      />
+      <FormInput
+        type="email"
+        {...register("email")}
+        placeholder="Email*"
       />
       <Button type="submit">Create</Button>
     </form>

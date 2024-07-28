@@ -1,15 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import {FieldErrors, FieldValues, SubmitErrorHandler, SubmitHandler, useForm} from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowLeft } from "lucide-react";
 import { DetailsForm } from "@/components/product/forms/DetailsForm.tsx";
 import { AttributesForm } from "@/components/product/forms/AttributesForm.tsx";
-import { InventoryCard } from "@/components/product/forms/inventory-card.tsx";
-import { PriceCard } from "@/components/product/forms/price-card.tsx";
-import { SubscriptionCard } from "@/components/product/forms/subscription-card.tsx";
-import { BatchCard } from "@/components/product/forms/batch-card.tsx";
+import ErrorContext from "@/context/ErrorContext.tsx";
+import {useContext} from "react";
+import {InventoryForm} from "@/components/product/forms/InventoryForm.tsx";
+import {PriceForm} from "@/components/product/forms/PriceForm.tsx";
+import {SubscriptionCard} from "@/components/product/forms/subscription-card.tsx";
+import {BatchForm} from "@/components/product/forms/BatchForm.tsx";
 
 const StockTypeSchema = z.object({
   warehouseId: z.number(),
@@ -21,47 +23,50 @@ const schema = z.object({
   description: z
     .string()
     .max(250, "Product description should be max (250) characters"),
-  image: z.instanceof(FileList),
-  strengthMg: z.number(),
-  // maxDayFrequency: z.number(),
-  // maxSupplyInDaysDays: z.number(),
-  contraindicationsDescription: z.string(),
-  storageConditionDescription: z.string(),
-  // specialRequirementsId: z.number(),
-  // regulatoryInformationId: z.number(),
-  activeIngredientsIds: z.array(z.number()),
-  allergiesIds: z.array(z.number()),
-  dosageFormsIds: z.array(z.number()),
-  indicationsIds: z.array(z.number()),
-  routeOfAdministrationsIds: z.array(z.number()),
-  sideEffectsIds: z.array(z.number()),
-  usageWarningsIds: z.array(z.number()),
-  manufacturerId: z.number(),
-  // manufacturingDate: z.date(),
-  // expiryDate: z.date(),
-  // price: z
-  //   .number({ invalid_type_error: "Price field is required." })
-  //   .positive(),
-  // costPerItem: z
-  //   .number({ invalid_type_error: "Cost per Item field is required." })
-  //   .positive(),
-  // stocks: z
-  //   .array(StockTypeSchema)
-  //   .min(1, "At least (1) warehouse should be selected."),
-  // batchNumber: z.string(),
-  // barcode: z.string(),
-  // packagingWeight: z.preprocess((val) => {
-  //   if (val === "") {
-  //     return undefined;
-  //   }
-  //   return val;
-  // }, z.number().optional()),
+  image: z.instanceof(FileList).optional(),
+  strengthMg: z.number().min(1, "Required"),
+  contraindicationsDescription: z.string().optional(),
+  storageConditionDescription: z.string().optional(),
+  specialRequirementsId: z.number(),
+  regulatoryInformationId: z.number(),
+  activeIngredientsIds: z.array(z.number()).min(1, "Required"),
+  allergiesIds: z.array(z.number()).optional(),
+  dosageFormsIds: z.array(z.number()).min(1, "Required"),
+  indicationsIds: z.array(z.number()).optional(),
+  routeOfAdministrationsIds: z.array(z.number()).min(1, "Required"),
+  sideEffectsIds: z.array(z.number()).optional(),
+  usageWarningsIds: z.array(z.number()).optional(),
+  manufacturerId: z.number().optional(),
+  manufacturingDate: z
+    .union([z.date(), z.string().datetime()])
+    .transform((val) => new Date(val)),
+  expiryDate: z
+    .union([z.date(), z.string().datetime()])
+    .transform((val) => new Date(val)),
+  price: z
+    .number({ invalid_type_error: "Price field is required." })
+    .positive(),
+  costPerItem: z
+    .number({ invalid_type_error: "Cost per Item field is required." })
+    .positive(),
+  stocks: z
+    .array(StockTypeSchema)
+    .min(1, "At least (1) warehouse should be selected."),
+  batchNumber: z.string(),
+  barcode: z.string(),
+  packagingWeight: z.preprocess((val) => {
+    if (val === "") {
+      return undefined;
+    }
+    return val;
+  }, z.number().optional()),
 });
 
 export type FormData = z.infer<typeof schema>;
 
 const NewProduct = () => {
   const navigate = useNavigate();
+  const { setError } = useContext(ErrorContext);
 
   const {
     register,
@@ -79,7 +84,7 @@ const NewProduct = () => {
       routeOfAdministrationsIds: [],
       sideEffectsIds: [],
       usageWarningsIds: [],
-      // stocks: [],
+      stocks: [],
     },
   });
 
@@ -87,8 +92,16 @@ const NewProduct = () => {
     console.log(data);
   };
 
+  const onError: SubmitErrorHandler<FormData> = (errors: FieldErrors) => {
+    const errorCount = Object.keys(errors).length;
+    setError(`Form submission failed. ${errorCount} field(s) are invalidly filled in.`);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6 mx-auto w-full max-w-screen-lg">
+    <form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      className="p-6 space-y-6 mx-auto w-full max-w-screen-lg"
+    >
       <div className="flex items-center justify-between">
         <div className="flex gap-2 items-center">
           <Button
@@ -101,7 +114,12 @@ const NewProduct = () => {
           <h1 className="text-lg font-semibold md:text-2xl">Add Product</h1>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => navigate("/dashboard/products")} variant="destructive">Discard</Button>
+          <Button
+            onClick={() => navigate("/dashboard/products")}
+            variant="destructive"
+          >
+            Discard
+          </Button>
           <Button type="submit">Save</Button>
         </div>
       </div>
@@ -116,21 +134,21 @@ const NewProduct = () => {
           />
         </div>
 
-        {/*<div className="w-full space-y-6 lg:w-1/2">*/}
-        {/*  <InventoryCard*/}
-        {/*    register={register}*/}
-        {/*    control={control}*/}
-        {/*    errors={errors}*/}
-        {/*  />*/}
-        {/*  <PriceCard*/}
-        {/*    register={register}*/}
-        {/*    control={control}*/}
-        {/*    watch={watch}*/}
-        {/*    errors={errors}*/}
-        {/*  />*/}
-        {/*  <SubscriptionCard />*/}
-        {/*  <BatchCard register={register} errors={errors} />*/}
-        {/*</div>*/}
+        <div className="w-full space-y-6 lg:w-1/2">
+          <InventoryForm
+            register={register}
+            control={control}
+            errors={errors}
+          />
+          <PriceForm
+            register={register}
+            control={control}
+            watch={watch}
+            errors={errors}
+          />
+          <SubscriptionCard />
+          <BatchForm register={register} errors={errors} />
+        </div>
       </div>
     </form>
   );

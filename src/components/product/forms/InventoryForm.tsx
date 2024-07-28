@@ -1,6 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card.tsx";
 import { Label } from "@/components/ui/label.tsx";
-import { Input } from "@/components/ui/input.tsx";
 import {
   Tooltip,
   TooltipContent,
@@ -8,11 +7,20 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import { CircleHelp } from "lucide-react";
-import { AttributeSelector } from "@/components/product/attribute-selector.tsx";
+import { AttributeSelector } from "@/components/product/ui/attribute-selector.tsx";
 import { Warehouse } from "@/types/product-attribute-types.ts";
-import {FC, useEffect, useState} from "react";
-import {Control, FieldErrors, useFieldArray, UseFormRegister} from "react-hook-form";
-import {FormData} from "@/components/product/NewProduct.tsx"
+import { FC, useEffect, useState } from "react";
+import {
+  Control,
+  FieldErrors,
+  useFieldArray,
+  UseFormRegister,
+} from "react-hook-form";
+import { FormData } from "@/components/product/NewProduct.tsx";
+import { FormInput } from "@/components/ui/form-input.tsx";
+import { WarehouseForm } from "@/components/product/attribute-forms/WarehouseForm.tsx";
+
+type SingleOrArray<T> = T | T[] | null;
 
 interface Props {
   register: UseFormRegister<FormData>;
@@ -20,15 +28,10 @@ interface Props {
   errors: FieldErrors<FormData>;
 }
 
-export const InventoryCard: FC<Props> = ({
-  register,
-  errors,
-  control,
-}) => {
+export const InventoryForm: FC<Props> = ({ register, errors, control }) => {
   const [warehouses, setWarehouses] = useState<Warehouse[] | null>(null);
-  const [selectedWarehousesIds, setSelectedWarehousesIds] = useState<number[]>(
-    [],
-  );
+  const [selectedWarehousesIds, setSelectedWarehousesIds] =
+    useState<SingleOrArray<number>>(null);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -40,14 +43,20 @@ export const InventoryCard: FC<Props> = ({
   };
 
   useEffect(() => {
-    selectedWarehousesIds.forEach((warehouseId) => {
+    const ids = Array.isArray(selectedWarehousesIds)
+      ? selectedWarehousesIds
+      : selectedWarehousesIds
+        ? [selectedWarehousesIds]
+        : [];
+
+    ids.forEach((warehouseId) => {
       if (!fields.some((field) => field.warehouseId === warehouseId)) {
         append({ warehouseId, quantity: 0 });
       }
     });
 
     fields.forEach((field, index) => {
-      if (!selectedWarehousesIds.includes(field.warehouseId)) {
+      if (!ids.includes(field.warehouseId)) {
         remove(index);
       }
     });
@@ -58,23 +67,25 @@ export const InventoryCard: FC<Props> = ({
       <Card className="h-min">
         <CardContent className="mt-4">
           <AttributeSelector<Warehouse>
-            route={`/warehouse/${1}/warehouse`}
+            route="/warehouse"
             name="Warehouse"
-            isRequired={true}
-            info={"Select a warehouse or pharmacy where this product is stored."}
+            isRequired
+            info="Select a warehouse or pharmacy where this product is stored."
             error={errors.stocks ? errors.stocks.message : undefined}
             selectedAttributeIds={selectedWarehousesIds}
             setSelectedAttributeIds={setSelectedWarehousesIds}
+            onChange={setSelectedWarehousesIds}
+            createForm={WarehouseForm}
             onAttributesChange={handleWarehouseChange}
           />
         </CardContent>
       </Card>
 
-      {selectedWarehousesIds.length > 0 && (
+      {selectedWarehousesIds && (
         <Card className="h-min">
           <CardContent className="mt-4">
             <div className="grid w-full gap-2">
-                <Label>Inventory</Label>
+              <Label>Inventory</Label>
               {fields.map((field, index) => (
                 <div
                   className="flex items-center justify-between"
@@ -89,7 +100,7 @@ export const InventoryCard: FC<Props> = ({
                     Quantity
                   </Label>
                   <div className="relative w-1/3">
-                    <Input
+                    <FormInput
                       type="number"
                       inputMode="numeric"
                       placeholder="0"

@@ -70,7 +70,7 @@ export const DetailsForm = ({ register, errors }: Props) => {
         />
       </div>
       {errors.image && (
-        <p className="text-red-400 text-xs">{errors.image.message}</p>
+        <p className="text-red-500 text-xs">{errors.image.message}</p>
       )}
     </div>
   );
@@ -90,7 +90,7 @@ export const DetailsForm = ({ register, errors }: Props) => {
               placeholder="Name of your product"
             />
             {errors.name && (
-              <p className="text-red-400 text-xs">{errors.name.message}</p>
+              <p className="text-red-500 text-xs">{errors.name.message}</p>
             )}
           </div>
 
@@ -101,7 +101,7 @@ export const DetailsForm = ({ register, errors }: Props) => {
               placeholder="Enter your product description here."
             />
             {errors.description && (
-              <p className="text-red-400 text-xs">
+              <p className="text-red-500 text-xs">
                 {errors.description.message}
               </p>
             )}

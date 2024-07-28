@@ -1,6 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card.tsx";
 import { Label } from "@/components/ui/label.tsx";
-import { Input } from "@/components/ui/input.tsx";
 import {
   Tooltip,
   TooltipContent,
@@ -11,6 +10,7 @@ import { Asterisk, CircleHelp } from "lucide-react";
 import {Control, FieldErrors, UseFormRegister, UseFormWatch} from "react-hook-form";
 import {FormData} from "@/components/product/NewProduct.tsx"
 import { useEffect, useState } from "react";
+import {FormInput} from "@/components/ui/form-input.tsx";
 
 interface Props {
   register: UseFormRegister<FormData>;
@@ -19,7 +19,7 @@ interface Props {
   errors: FieldErrors<FormData>;
 }
 
-export const PriceCard = ({ register, watch, errors }: Props) => {
+export const PriceForm = ({ register, watch, errors }: Props) => {
   const [profit, setProfit] = useState<number | null>(null);
   const [margin, setMargin] = useState<number | null>(null);
 
@@ -52,14 +52,13 @@ export const PriceCard = ({ register, watch, errors }: Props) => {
                 <Asterisk className="h-4 w-4 text-red-500" />
                 <Label>Price</Label>
               </div>
-              <Input
+              <FormInput
                 {...register("price", { valueAsNumber: true })}
                 type="number"
-                inputMode="decimal"
                 placeholder="₼ 0.00"
               />
               {errors.price && (
-                <Label className="text-red-400">{errors.price.message}</Label>
+                <p className="text-red-400">{errors.price.message}</p>
               )}
             </div>
             <div className="w-1/2 grid gap-2">
@@ -68,10 +67,9 @@ export const PriceCard = ({ register, watch, errors }: Props) => {
                 <Label>Cost Per Item</Label>
               </div>
               <div className="relative">
-                <Input
+                <FormInput
                   {...register("costPerItem", { valueAsNumber: true })}
                   type="number"
-                  inputMode="numeric"
                   placeholder="₼ 0.00"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 text-muted-foreground">
@@ -91,9 +89,9 @@ export const PriceCard = ({ register, watch, errors }: Props) => {
                 </div>
               </div>
               {errors.costPerItem && (
-                <Label className="text-red-400">
+                <p className="text-red-400">
                   {errors.costPerItem.message}
-                </Label>
+                </p>
               )}
             </div>
           </div>

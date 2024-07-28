@@ -5,7 +5,7 @@ import {
   useContext,
   useEffect,
   useRef,
-  useState
+  useState,
 } from "react";
 import { Label } from "@/components/ui/label.tsx";
 import {
@@ -27,9 +27,17 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 import { ProductAttribute } from "@/types/product-attribute-types.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
-import {AxiosError} from "axios";
+import { AxiosError } from "axios";
 import ErrorContext from "@/context/ErrorContext.tsx";
-import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog.tsx";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog.tsx";
+
+type SingleOrArray<T> = T | T[] | null;
 
 interface SelectAttributeProps<T extends ProductAttribute> {
   isRequired?: boolean;
@@ -38,10 +46,10 @@ interface SelectAttributeProps<T extends ProductAttribute> {
   name: string;
   info?: string;
   error?: string;
-  selectedAttributeIds: number | number[];
-  setSelectedAttributeIds: Dispatch<SetStateAction<number | number[]>>;
-  onChange: (ids: number | number[]) => void;
-  onAttributesChange?: (attributes: T[] | null) => void; // Acts as a function to get the array of attributes from this component to the parent component
+  selectedAttributeIds: SingleOrArray<number>;
+  setSelectedAttributeIds: Dispatch<SetStateAction<SingleOrArray<number>>>;
+  onChange: (ids: SingleOrArray<number>) => void;
+  onAttributesChange?: (attributes: T[] | null) => void;
   createForm?: ComponentType<{ onSubmit: (data: Partial<T>) => Promise<void> }>;
 }
 
@@ -62,15 +70,13 @@ export const AttributeSelector = <T extends ProductAttribute>({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [attributes, setAttributes] = useState<T[] | null>(null);
   const [filteredAttrbs, setFilteredAttrbs] = useState<T[] | null>(null);
-  const [showDropdown, setShowDropdown] = useState<boolean>();
-  const [isLoading, setIsLoading] = useState<boolean>();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { setError } = useContext(ErrorContext);
-  const [query, setQuery] = useState<string>("");
-  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
+  const [query, setQuery] = useState("");
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const selectedIds = Array.isArray(selectedAttributeIds)
-      ? selectedAttributeIds
-      : selectedAttributeIds ? [selectedAttributeIds] : [];
+  const selectedIds = Array.isArray(selectedAttributeIds) ? selectedAttributeIds : selectedAttributeIds ? [selectedAttributeIds] : [];
 
   const handleCreateSubmit = async (data: Partial<T>) => {
     try {
@@ -80,9 +86,7 @@ export const AttributeSelector = <T extends ProductAttribute>({
       setAttributes((prev) =>
         prev ? [...prev, newAttribute] : [newAttribute],
       );
-
-      setSelectedAttributeIds((prev) => [...prev, newAttribute.id]);
-
+      handleSelect(newAttribute.id);
       setShowCreateModal(false);
 
       if (onAttributesChange) {
@@ -103,25 +107,20 @@ export const AttributeSelector = <T extends ProductAttribute>({
   };
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setShowDropdown(false);
       }
-    }
+    };
 
-    function handleWindowBlur() {
-      setShowDropdown(false);
-    }
+    const handleWindowBlur = () => setShowDropdown(false);
 
     if (showDropdown) {
       document.addEventListener("mousedown", handleClickOutside);
       window.addEventListener("blur", handleWindowBlur);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-      window.removeEventListener("blur", handleWindowBlur);
     }
 
     return () => {
@@ -131,7 +130,6 @@ export const AttributeSelector = <T extends ProductAttribute>({
   }, [showDropdown]);
 
   const fetchAttributes = async () => {
-    setShowDropdown(!showDropdown);
     if (attributes === null) {
       setIsLoading(true);
       try {
@@ -144,19 +142,20 @@ export const AttributeSelector = <T extends ProductAttribute>({
           onAttributesChange(response.data);
         }
       } catch (error) {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            if (error.response.status !== 404) {
-              setError(error.response?.data);
-            }
-          }
-        } else {
+        if (
+          error instanceof AxiosError &&
+          error.response &&
+          error.response.status !== 404
+        ) {
+          setError(error.response.data);
+        } else if (!(error instanceof AxiosError)) {
           setError("Unexpected error");
         }
       } finally {
         setIsLoading(false);
       }
     }
+    setShowDropdown(!showDropdown);
   };
 
   useEffect(() => {
@@ -169,25 +168,32 @@ export const AttributeSelector = <T extends ProductAttribute>({
   }, [query, attributes]);
 
   const handleSelect = (attributeId: number) => {
-    let newSelectedIds: number | number[];
+    let newIds: SingleOrArray<number>;
     if (selectedIds.includes(attributeId)) {
-      newSelectedIds = selectedIds.filter((id) => id !== attributeId);
+      newIds = selectedIds.filter((id) => id !== attributeId);
     } else {
       if (selectLimit === 1) {
-        newSelectedIds = attributeId;
-      } else if (selectedIds.length < selectLimit) {
-        newSelectedIds = [...selectedIds, attributeId];
+        newIds = attributeId;
+      } else if (!selectLimit || selectedIds.length < selectLimit) {
+        newIds = [...selectedIds, attributeId];
       } else {
         return;
       }
     }
-    setSelectedAttributeIds(newSelectedIds);
-    onChange(newSelectedIds);
+    setSelectedAttributeIds(newIds);
+    onChange(newIds);
   };
 
   const handleRemove = (attributeId: number) => {
-    const newSelectedIds = selectedIds.filter((id) => id !== attributeId);
-    const result = selectLimit === 1 ? newSelectedIds[0] || null : newSelectedIds;
+    const newIds = selectedIds.filter((id) => id !== attributeId);
+    let result: SingleOrArray<number>;
+
+    if (selectLimit === 1) {
+      result = newIds.length > 0 ? newIds[0] : null;
+    } else {
+      result = newIds.length > 0 ? newIds : null;
+    }
+
     setSelectedAttributeIds(result);
     onChange(result);
   };
@@ -213,7 +219,7 @@ export const AttributeSelector = <T extends ProductAttribute>({
         )}
       </div>
       <div className="flex space-x-2">
-        <div className="w-full relative ">
+        <div className="w-full relative">
           <Button
             variant="outline"
             size="default"
@@ -223,18 +229,18 @@ export const AttributeSelector = <T extends ProductAttribute>({
             onClick={fetchAttributes}
           >
             <div className="flex flex-wrap gap-1">
-              {selectedAttributeIds.length > 0 ? (
-                selectedAttributeIds.map((id) => (
+              {selectedIds.length > 0 ? (
+                selectedIds.map((id) => (
                   <div
                     key={id}
                     className="text-xs px-2 py-1 border rounded-full flex items-center space-x-1"
                     onClick={(e) => e.stopPropagation()}
-                    onMouseEnter={(e) => e.stopPropagation()}
                   >
                     <p className="whitespace-nowrap">
-                      {attributes &&
+                      {
                         attributes?.find((attribute) => attribute.id === id)
-                          ?.name}
+                          ?.name
+                      }
                     </p>
                     <X
                       className="w-4 h-4 hover:cursor-pointer opacity-50 hover:opacity-100 transition"
@@ -249,11 +255,10 @@ export const AttributeSelector = <T extends ProductAttribute>({
                 <p>Select {name}</p>
               )}
             </div>
-
             <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
           </Button>
           {showDropdown && (
-            <div className="z-50 w-full top-11 absolute rounded-md border bg-popover text-popover-foreground shadow-md outline-non">
+            <div className="z-50 w-full top-11 absolute rounded-md border bg-popover text-popover-foreground shadow-md outline-none">
               <div className="flex items-center border-b px-3">
                 <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
                 <input
@@ -277,15 +282,15 @@ export const AttributeSelector = <T extends ProductAttribute>({
                       className="text-sm font-medium text-foreground hover:bg-muted px-2 py-1 rounded hover:cursor-pointer flex items-center space-x-2"
                       key={attribute.id}
                     >
-                      {selectedAttributeIds.find(
-                        (id) => id === attribute.id,
-                      ) && <Check className="h-4 w-4" />}
+                      {selectedIds.includes(attribute.id) && (
+                        <Check className="h-4 w-4" />
+                      )}
                       <p>{attribute.name}</p>
                     </div>
                   ))
                 )}
                 {!isLoading && !attributes && (
-                  <Label>No {name} were found.</Label>
+                  <p className="text-sm">No {name} were found.</p>
                 )}
               </div>
             </div>
@@ -311,7 +316,7 @@ export const AttributeSelector = <T extends ProductAttribute>({
           </Dialog>
         )}
       </div>
-      {error && <Label className="text-red-400">{error}</Label>}
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 };
