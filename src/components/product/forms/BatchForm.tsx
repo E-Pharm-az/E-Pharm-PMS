@@ -19,25 +19,33 @@ export const BatchForm = ({ register, errors }: Props) => {
               <Label>Batch Number</Label>
               <FormInput {...register("batchNumber")} placeholder="#ABC12345" />
               {errors.batchNumber && (
-                  <Label className="text-red-400">{errors.batchNumber.message}</Label>
+                <Label className="text-red-400">
+                  {errors.batchNumber.message}
+                </Label>
               )}
             </div>
             <div className="grid w-full gap-2">
               <Label>Barcode</Label>
               <FormInput {...register("barcode")} placeholder="012345678901" />
               {errors.barcode && (
-                  <Label className="text-red-400">{errors.barcode.message}</Label>
+                <Label className="text-red-400">{errors.barcode.message}</Label>
               )}
             </div>
             <div className="grid w-full gap-2">
-              <Label>Weight</Label>
+              <Label>Weight (g)</Label>
               <FormInput
-                {...register("packagingWeight", {valueAsNumber: true})}
+                {...register("packagingWeight", {
+                  setValueAs: (v: string) =>
+                    v === "" ? undefined : parseFloat(v),
+                })}
                 type="number"
+                step="0.01"
                 placeholder="0.00"
               />
               {errors.packagingWeight && (
-                  <Label className="text-red-400">{errors.packagingWeight.message}</Label>
+                <Label className="text-red-400">
+                  {errors.packagingWeight.message}
+                </Label>
               )}
             </div>
           </div>

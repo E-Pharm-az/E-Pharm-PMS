@@ -47,8 +47,11 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
             <Label>Strength (mg)</Label>
           </div>
           <FormInput
+            {...register("strengthMg", {
+              setValueAs: (v: string) => (v === "" ? undefined : parseFloat(v)),
+            })}
             type="number"
-            {...register("strengthMg", { valueAsNumber: true })}
+            step="0.01"
             placeholder="Strength in milligrams"
           />
           {errors.strengthMg && (
@@ -140,12 +143,11 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
           control={control}
           render={({ field }) => (
             <AttributeSelector<SpecialRequirement>
-              isRequired
               selectLimit={1}
               error={errors.specialRequirementsId?.message}
               route="/specialrequirement"
               name="Special Requirement"
-              selectedAttributeIds={field.value}
+              selectedAttributeIds={field.value ?? null}
               onChange={field.onChange}
               setSelectedAttributeIds={field.onChange}
               createForm={SpecialRequirementForm}
@@ -222,6 +224,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
           control={control}
           render={({ field }) => (
             <AttributeSelector<Manufacturer>
+              isRequired
               error={errors.manufacturerId?.message}
               selectLimit={1}
               route="/manufacturer"
@@ -236,6 +239,10 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
 
         <div className="flex items-center gap-2 w-full justify-between">
           <div className="grid gap-1 w-1/2">
+            <div className="flex items-center space-x-0.5">
+              <Asterisk className="h-4 w-4 text-red-500" />
+              <Label>Manufacturing date</Label>
+            </div>
             <Controller
               name="manufacturingDate"
               control={control}
@@ -259,7 +266,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
                       {field.value ? (
                         format(new Date(field.value), "PPP")
                       ) : (
-                        <span>Select manufacturing date*</span>
+                        <span>Select date</span>
                       )}
                     </Button>
                   </PopoverTrigger>
@@ -283,6 +290,11 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
           </div>
 
           <div className="grid gap-1 w-1/2">
+            <div className="flex items-center space-x-0.5">
+              <Asterisk className="h-4 w-4 text-red-500" />
+              <Label>Expiry date</Label>
+            </div>
+
             <Controller
               name="expiryDate"
               control={control}
@@ -306,7 +318,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
                       {field.value ? (
                         format(new Date(field.value), "PPP")
                       ) : (
-                        <span>Select expiry date*</span>
+                        <span>Select date</span>
                       )}
                     </Button>
                   </PopoverTrigger>

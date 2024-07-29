@@ -1,27 +1,28 @@
-import { Card, CardContent } from "@/components/ui/card.tsx";
-import { Asterisk } from "lucide-react";
-import { Label } from "@/components/ui/label.tsx";
-import { Textarea } from "@/components/ui/textarea.tsx";
-import { Button } from "@/components/ui/button.tsx";
 import { ChangeEvent, useRef, useState } from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { FormData } from "@/components/product/NewProduct.tsx";
-import { FormInput } from "@/components/ui/form-input.tsx";
+import { Card, CardContent } from "@/components/ui/card";
+import { Asterisk } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FormData } from "@/components/product/NewProduct";
+import { FormInput } from "@/components/ui/form-input";
 
 interface Props {
   register: UseFormRegister<FormData>;
+  setValue: UseFormSetValue<FormData>;
   errors: FieldErrors<FormData>;
 }
 
-export const DetailsForm = ({ register, errors }: Props) => {
+export const DetailsForm = ({ register, setValue, errors }: Props) => {
   const [preview, setPreview] = useState<string | null>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
-  const { ref: registerRef, ...rest } = register("image");
 
   const handleUploadedFile = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
+      setValue("image", file);
     }
   };
 
@@ -29,6 +30,7 @@ export const DetailsForm = ({ register, errors }: Props) => {
 
   const handleRemoveImage = () => {
     setPreview(null);
+    setValue("image", undefined);
     if (hiddenInputRef.current) {
       hiddenInputRef.current.value = "";
     }
@@ -60,13 +62,10 @@ export const DetailsForm = ({ register, errors }: Props) => {
         )}
         <input
           type="file"
-          {...rest}
+          accept="image/*"
           className="hidden"
           onChange={handleUploadedFile}
-          ref={(e) => {
-            registerRef(e);
-            hiddenInputRef.current = e;
-          }}
+          ref={hiddenInputRef}
         />
       </div>
       {errors.image && (

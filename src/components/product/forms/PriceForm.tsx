@@ -50,11 +50,15 @@ export const PriceForm = ({ register, watch, errors }: Props) => {
             <div className="w-1/2 grid gap-2">
               <div className="flex items-center space-x-0.5">
                 <Asterisk className="h-4 w-4 text-red-500" />
-                <Label>Price</Label>
+                <Label>Price (AZN)</Label>
               </div>
               <FormInput
-                {...register("price", { valueAsNumber: true })}
+                {...register("price", {
+                  setValueAs: (v: string) =>
+                    v === "" ? undefined : parseFloat(v),
+                })}
                 type="number"
+                step="0.01"
                 placeholder="₼ 0.00"
               />
               {errors.price && (
@@ -64,12 +68,16 @@ export const PriceForm = ({ register, watch, errors }: Props) => {
             <div className="w-1/2 grid gap-2">
               <div className="flex items-center space-x-0.5">
                 <Asterisk className="h-4 w-4 text-red-500" />
-                <Label>Cost Per Item</Label>
+                <Label>Cost Per Item (AZN)</Label>
               </div>
               <div className="relative">
                 <FormInput
-                  {...register("costPerItem", { valueAsNumber: true })}
+                  {...register("costPerItem", {
+                    setValueAs: (v: string) =>
+                      v === "" ? undefined : parseFloat(v),
+                  })}
                   type="number"
+                  step="0.01"
                   placeholder="₼ 0.00"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 text-muted-foreground">
@@ -89,9 +97,7 @@ export const PriceForm = ({ register, watch, errors }: Props) => {
                 </div>
               </div>
               {errors.costPerItem && (
-                <p className="text-red-400">
-                  {errors.costPerItem.message}
-                </p>
+                <p className="text-red-400">{errors.costPerItem.message}</p>
               )}
             </div>
           </div>
