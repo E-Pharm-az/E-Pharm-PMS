@@ -26,7 +26,6 @@ import {
   Search,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input.tsx";
 import { BsSearch } from "react-icons/bs";
 import {
   Popover,
@@ -54,10 +53,10 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [showSearch, setShowSearch] = useState<boolean>(false);
+  const [showSearch, setShowSearch] = useState(false);
   const [columnNames, setColumnNames] = useState<string[]>([]);
-  const [desc, setDesc] = useState<boolean>(false);
-  const [selectedColumn, setSelectedColumn] = useState<string>("");
+  const [desc, setDesc] = useState(false);
+  const [selectedColumn, setSelectedColumn] = useState("");
 
   const table = useReactTable({
     data,
@@ -84,7 +83,7 @@ export function DataTable<TData, TValue>({
 
   const handleCancelSearch = () => {
     setShowSearch(false);
-    table.getColumn("Name")?.setFilterValue("");
+    table.getColumn("name")?.setFilterValue("");
     setColumnFilters((prevFilters) =>
       prevFilters.filter((filter) => filter.id !== "name"),
     );
@@ -116,10 +115,10 @@ export function DataTable<TData, TValue>({
             <FormInput
               placeholder={`Searching all ${name}`}
               value={
-                (table.getColumn("Name")?.getFilterValue() as string) ?? ""
+                (table.getColumn("name")?.getFilterValue() as string) ?? ""
               }
               onChange={(event) =>
-                table.getColumn("Name")?.setFilterValue(event.target.value)
+                table.getColumn("name")?.setFilterValue(event.target.value)
               }
               className="w-full h-8 appearance-none pl-8 shadow-none bg-background"
             />

@@ -33,7 +33,7 @@ const columns: ColumnDef<Product>[] = [
     enableHiding: false,
   },
   {
-    id: "ImageUrl",
+    id: "imageUrl",
     header: "Image",
     cell: ({ row }) => (
       <img
@@ -44,17 +44,12 @@ const columns: ColumnDef<Product>[] = [
     ),
   },
   {
-    id: "Name",
+    accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => row.original.name,
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
-    id: "Description",
-    header: "Description",
-    cell: ({ row }) => row.original.description,
-  },
-  {
-    id: "Price",
+    id: "price",
     header: "Price (AZN)",
     cell: ({ row }) => (row.original.price / 100).toFixed(2),
   },

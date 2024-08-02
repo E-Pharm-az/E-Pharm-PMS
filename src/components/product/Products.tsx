@@ -8,7 +8,7 @@ export interface Product {
   pharmaCompanyId: number;
   name: string;
   description: string;
-  imageUrl: string;
+  imageUrl?: string;
   isApproved: boolean;
   price: number;
 }
