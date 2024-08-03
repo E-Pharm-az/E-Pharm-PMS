@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label.tsx";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { FormData } from "@/components/product/NewProduct.tsx";
 import { FormInput } from "@/components/ui/form-input.tsx";
+import { Asterisk } from "lucide-react";
 
 interface Props {
   register: UseFormRegister<FormData>;
@@ -32,14 +33,13 @@ export const BatchForm = ({ register, errors }: Props) => {
               )}
             </div>
             <div className="grid w-full gap-2">
-              <Label>Weight (g)</Label>
+              <div className="flex items-center space-x-0.5">
+                <Asterisk className="h-4 w-4 text-red-500" />
+                <Label>Weight (g)</Label>
+              </div>
               <FormInput
-                {...register("packagingWeight", {
-                  setValueAs: (v: string) =>
-                    v === "" ? undefined : parseFloat(v),
-                })}
+                {...register("packagingWeight")}
                 type="number"
-                step="0.01"
                 placeholder="0.00"
               />
               {errors.packagingWeight && (

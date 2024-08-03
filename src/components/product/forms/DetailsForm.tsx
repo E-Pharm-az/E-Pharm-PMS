@@ -56,8 +56,8 @@ export const DetailsForm = ({ register, setValue, errors }: Props) => {
             />
           </>
         ) : (
-          <Button variant="outline" onClick={handleButtonClick}>
-            Upload new
+          <Button disabled={true} variant="outline" onClick={handleButtonClick}>
+            Upload new (coming soon)
           </Button>
         )}
         <input

@@ -28,8 +28,8 @@ const schema = z.object({
     .max(250, "Product description should be max (250) characters"),
   image: z.instanceof(File).optional(),
   strengthMg: z.preprocess(
-      (val) => (val === "" ? undefined : Number(val)),
-      z.number().min(1, "Required")
+    (val) => (val === "" ? undefined : Number(val)),
+    z.number().min(1, "Required"),
   ),
   contraindicationsDescription: z.string().optional(),
   storageConditionDescription: z.string().optional(),
@@ -51,11 +51,11 @@ const schema = z.object({
     .transform((val) => new Date(val)),
   price: z.preprocess(
     (val) => (val === "" ? undefined : Number(val)),
-    z.number().min(0, "Required")
+    z.number().min(0, "Required"),
   ),
   costPerItem: z.preprocess(
     (val) => (val === "" ? undefined : Number(val)),
-    z.number().min(0, "Rkkequired")
+    z.number().min(0, "Required"),
   ),
   stocks: z
     .array(StockTypeSchema)
@@ -64,7 +64,7 @@ const schema = z.object({
   barcode: z.string(),
   packagingWeight: z.preprocess(
     (val) => (val === "" ? undefined : Number(val)),
-    z.number().min(0).optional(),
+    z.number().min(0, "Required"),
   ),
 });
 
@@ -131,7 +131,7 @@ const NewProduct = () => {
         }
       });
 
-      await privateAxios.post("/product", formData);
+      await privateAxios.post("/products", formData);
       navigate("/dashboard/products");
     }
     catch (error) {
@@ -199,7 +199,6 @@ const NewProduct = () => {
             errors={errors}
           />
           <PriceForm
-            register={register}
             control={control}
             watch={watch}
             errors={errors}

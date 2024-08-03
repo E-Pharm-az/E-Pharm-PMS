@@ -67,7 +67,7 @@ export const InventoryForm: FC<Props> = ({ register, errors, control }) => {
       <Card className="h-min">
         <CardContent className="mt-4">
           <AttributeSelector<Warehouse>
-            route="/warehouse"
+            route="/warehouses"
             name="Warehouse"
             isRequired
             info="Select a warehouse or pharmacy where this product is stored."

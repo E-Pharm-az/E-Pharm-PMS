@@ -76,7 +76,7 @@ const ProductsDataTable = () => {
       setLoading(true);
       try {
         const response = await axiosPrivate.get<Product[]>(
-          `/product/pharmacy?page=1`,
+          `/products/pharmacy?page=1`,
         );
         setProducts(response.data);
       } catch (error) {

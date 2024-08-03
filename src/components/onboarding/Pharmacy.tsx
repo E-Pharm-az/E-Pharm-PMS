@@ -11,7 +11,6 @@ import useOnboardingNavigation from "@/hooks/useOnboardingNavigation.ts";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 
 interface FormData {
-  name: string;
   tin: string;
   email: string;
   phone: string;
@@ -43,14 +42,7 @@ const Pharmacy = () => {
       pharmacyCreated: true,
     });
     try {
-      await axiosPrivate.post("/pharmacy", {
-        Name: data.name,
-        Tin: data.tin,
-        Email: data.email,
-        Phone: data.phone,
-        Website: data.website,
-        Address: data.address,
-      });
+      await axiosPrivate.post("/pharmacy", data);
 
       goToStep("invite-staff");
     } catch (error) {
@@ -80,20 +72,6 @@ const Pharmacy = () => {
           </p>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2">
-          <div className="w-full">
-            <Input
-              type="text"
-              label="Pharmacy name"
-              autoCorrect="off"
-              autoCapitalize="on"
-              disabled={loading}
-              {...register("name", { required: "Required" })}
-              className={`${errors.name && "border-red-500 "}`}
-            />
-            <p className="w-full h-3 text-xs text-red-500">
-              {errors.name?.message}
-            </p>
-          </div>
           <div className="w-full">
             <Input
               type="text"
@@ -144,7 +122,7 @@ const Pharmacy = () => {
               autoCapitalize="on"
               disabled={loading}
               {...register("website", { required: "Required" })}
-              className={`${errors.name && "border-red-500 "}`}
+              className={`${errors.website && "border-red-500 "}`}
             />
             <p className="w-full h-3 text-xs text-red-500">
               {errors.website?.message}

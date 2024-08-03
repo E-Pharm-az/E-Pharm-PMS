@@ -47,12 +47,14 @@ const InviteStaff = () => {
     }
   }, []);
 
+  const filterValidEmails = (data: FormData): { email: string }[] => {
+    return data.emails.filter((item) => item.email.trim() !== "");
+  };
+
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-      const validEmails = data.emails.filter(
-        (item) => item.email.trim() !== "",
-      );
+      const validEmails = filterValidEmails(data);
       if (validEmails.length > 0) {
         await axiosPrivate.post("/pharmacy-staff/invite", {
           emails: validEmails,
@@ -158,7 +160,7 @@ const InviteStaff = () => {
             Add more
           </button>
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Sending Invites..." : "Send Invites"}
+            Continue
           </Button>
         </form>
       </div>

@@ -82,7 +82,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
             <AttributeSelector<ActiveIngredient>
               isRequired
               error={errors.activeIngredientsIds?.message}
-              route="/active-ingredient"
+              route="/active-ingredients"
               name="Active ingredient"
               selectedAttributeIds={field.value}
               onChange={field.onChange}
@@ -98,7 +98,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
           render={({ field }) => (
             <AttributeSelector<Allergy>
               error={errors.allergiesIds?.message}
-              route="/allergy"
+              route="/allergies"
               name="Allergy"
               selectedAttributeIds={field.value ?? null}
               onChange={field.onChange}
@@ -114,7 +114,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
             <AttributeSelector<DosageForm>
               isRequired
               error={errors.dosageFormsIds?.message}
-              route="/dosageform"
+              route="/dosage-forms"
               name="Dosage form"
               selectedAttributeIds={field.value}
               onChange={field.onChange}
@@ -129,7 +129,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
           render={({ field }) => (
             <AttributeSelector<Indication>
               error={errors.indicationsIds?.message}
-              route="/indication"
+              route="/indications"
               name="Indication"
               selectedAttributeIds={field.value ?? null}
               onChange={field.onChange}
@@ -145,7 +145,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
             <AttributeSelector<SpecialRequirement>
               selectLimit={1}
               error={errors.specialRequirementsId?.message}
-              route="/specialrequirement"
+              route="/special-requirements"
               name="Special Requirement"
               selectedAttributeIds={field.value ?? null}
               onChange={field.onChange}
@@ -163,7 +163,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
               isRequired
               selectLimit={1}
               error={errors.specialRequirementsId?.message}
-              route="/regulatoryinformation"
+              route="/regulatory-info"
               name="Regulatory Information"
               selectedAttributeIds={field.value}
               onChange={field.onChange}
@@ -180,7 +180,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
             <AttributeSelector<RouteOfAdministration>
               isRequired
               error={errors.routeOfAdministrationsIds?.message}
-              route="/routeofadministration"
+              route="/roa"
               name="Route of administrations"
               selectedAttributeIds={field.value}
               onChange={field.onChange}
@@ -195,7 +195,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
           render={({ field }) => (
             <AttributeSelector<SideEffect>
               error={errors.sideEffectsIds?.message}
-              route="/sideeffect"
+              route="/side-effects"
               name="Side effect"
               selectedAttributeIds={field.value ?? null}
               onChange={field.onChange}
@@ -210,7 +210,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
           render={({ field }) => (
             <AttributeSelector<UsageWarning>
               error={errors.usageWarningsIds?.message}
-              route="/usagewarning"
+              route="/usage-warnings"
               name="Usage Warning"
               selectedAttributeIds={field.value ?? null}
               onChange={field.onChange}
@@ -227,7 +227,7 @@ export const AttributesForm = ({ register, control, errors }: Props) => {
               isRequired
               error={errors.manufacturerId?.message}
               selectLimit={1}
-              route="/manufacturer"
+              route="/manufacturers"
               name="Manufacturer"
               selectedAttributeIds={field.value ?? null}
               onChange={field.onChange}
