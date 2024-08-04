@@ -42,7 +42,7 @@ function App() {
             <Route element={<RequireAuth />}>
               <Route path="/dashboard" element={<DashboardLayout />}>
                 <Route index element={<Dashboard />} />
-                <Route path="products" element={<Products />}/>
+                <Route path="products" element={<Products />} />
                 <Route path="products/new" element={<NewProduct />} />
               </Route>
             </Route>
