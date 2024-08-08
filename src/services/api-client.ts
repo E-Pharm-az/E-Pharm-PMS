@@ -1,7 +1,9 @@
 import axios from "axios";
 
-// const BASE_URL = "https://localhost:7074/api";
-const BASE_URL = "https://api.e-pharm.co/api";
+import dotenv from "dotenv";
+
+dotenv.config();
+const BASE_URL = process.env.API_BASE_URL;
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
