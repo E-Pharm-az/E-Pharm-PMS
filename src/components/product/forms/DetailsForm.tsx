@@ -56,8 +56,8 @@ export const DetailsForm = ({ register, setValue, errors }: Props) => {
             />
           </>
         ) : (
-          <Button disabled={true} variant="outline" onClick={handleButtonClick}>
-            Upload new (coming soon)
+          <Button variant="outline" onClick={handleButtonClick}>
+            Upload new
           </Button>
         )}
         <input
@@ -69,7 +69,9 @@ export const DetailsForm = ({ register, setValue, errors }: Props) => {
         />
       </div>
       {errors.image && (
-        <p className="text-red-500 text-xs">{errors.image.message}</p>
+        <p className="text-red-500 text-xs">
+          {(errors.image.message as string) || "Invalid image"}
+        </p>
       )}
     </div>
   );
@@ -94,7 +96,10 @@ export const DetailsForm = ({ register, setValue, errors }: Props) => {
           </div>
 
           <div className="grid w-full gap-2">
-            <Label>Description</Label>
+            <div className="flex items-center space-x-0.5">
+              <Asterisk className="h-4 w-4 text-red-500" />
+              <Label>Description</Label>
+            </div>
             <Textarea
               {...register("description")}
               placeholder="Enter your product description here."

@@ -1,5 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import {FieldErrors, FieldValues, SubmitErrorHandler, SubmitHandler, useForm} from "react-hook-form";
+import {
+  FieldErrors,
+  FieldValues,
+  SubmitErrorHandler,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button.tsx";
@@ -7,13 +13,13 @@ import { ArrowLeft } from "lucide-react";
 import { DetailsForm } from "@/components/product/forms/DetailsForm.tsx";
 import { AttributesForm } from "@/components/product/forms/AttributesForm.tsx";
 import ErrorContext from "@/context/ErrorContext.tsx";
-import {useContext} from "react";
-import {InventoryForm} from "@/components/product/forms/InventoryForm.tsx";
-import {PriceForm} from "@/components/product/forms/PriceForm.tsx";
-import {SubscriptionCard} from "@/components/product/forms/subscription-card.tsx";
-import {BatchForm} from "@/components/product/forms/BatchForm.tsx";
+import { useContext } from "react";
+import { InventoryForm } from "@/components/product/forms/InventoryForm.tsx";
+import { PriceForm } from "@/components/product/forms/PriceForm.tsx";
+import { SubscriptionCard } from "@/components/product/forms/subscription-card.tsx";
+import { BatchForm } from "@/components/product/forms/BatchForm.tsx";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
-import {AxiosError} from "axios";
+import { AxiosError } from "axios";
 import LoaderContext from "@/context/LoaderContext.tsx";
 
 const StockTypeSchema = z.object({
@@ -21,10 +27,13 @@ const StockTypeSchema = z.object({
   quantity: z.number(),
 });
 
+type StockType  = z.infer<typeof StockTypeSchema>;
+
 const schema = z.object({
   name: z.string().min(3, "Product name should be at least (3) characters"),
   description: z
     .string()
+    .min(3, "Product description should be at least (3) characters")
     .max(250, "Product description should be max (250) characters"),
   image: z.instanceof(File).optional(),
   strengthMg: z.preprocess(
@@ -102,44 +111,91 @@ const NewProduct = () => {
     try {
       const formData = new FormData();
 
-      if (data.image instanceof File) {
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      if (data.image) {
         formData.append("image", data.image);
       }
+      formData.append("strengthMg", data.strengthMg.toString());
+      formData.append("contraindicationsDescription", data.contraindicationsDescription || "");
+      formData.append("storageConditionDescription", data.storageConditionDescription || "");
+      if (data.specialRequirementsId !== undefined) {
+        formData.append("specialRequirementsId", data.specialRequirementsId.toString());
+      }
+      formData.append("manufacturerId", data.manufacturerId.toString());
+      formData.append("regulatoryInformationId", data.regulatoryInformationId.toString());
 
-      Object.keys(data).forEach((key) => {
-        if (key !== "image") {
-          const value = data[key as keyof FormData];
-          if (value !== undefined && value !== null) {
-            if (Array.isArray(value)) {
-              // Handle array fields
-              value.forEach((item, index) => {
-                if (typeof item === "object" && item !== null) {
-                  // Handle nested objects (like stocks)
-                  Object.keys(item).forEach((nestedKey) => {
-                    formData.append(`${key}[${index}].${nestedKey}`, item[nestedKey]);
-                  });
-                } else {
-                  formData.append(`${key}[]`, item.toString());
-                }
-              });
-            } else if (value instanceof Date) {
-              formData.append(key, value.toISOString());
-            } else {
-              formData.append(key, value.toString());
-            }
-          }
-        }
+      data.activeIngredientsIds.forEach((id: number, index: number) => {
+        formData.append(`activeIngredientsIds[${index}]`, id.toString());
       });
 
-      await privateAxios.post("/products", formData);
+      if (data.allergiesIds) {
+        data.allergiesIds.forEach((id: number, index: number) => {
+          formData.append(`allergiesIds[${index}]`, id.toString());
+        });
+      }
+
+      data.dosageFormsIds.forEach((id: number, index: number) => {
+        formData.append(`dosageFormsIds[${index}]`, id.toString());
+      });
+
+      if (data.indicationsIds) {
+        data.indicationsIds.forEach((id: number, index: number) => {
+          formData.append(`indicationsIds[${index}]`, id.toString());
+        });
+      }
+
+      data.routeOfAdministrationsIds.forEach((id: number, index: number) => {
+        formData.append(`routeOfAdministrationsIds[${index}]`, id.toString());
+      });
+
+      if (data.sideEffectsIds) {
+        data.sideEffectsIds.forEach((id: number, index: number) => {
+          formData.append(`sideEffectsIds[${index}]`, id.toString());
+        });
+      }
+
+      if (data.usageWarningsIds) {
+        data.usageWarningsIds.forEach((id: number, index: number) => {
+          formData.append(`usageWarningsIds[${index}]`, id.toString());
+        });
+      }
+
+      formData.append("manufacturingDate", data.manufacturingDate.toISOString());
+      formData.append("expiryDate", data.expiryDate.toISOString());
+      formData.append("price", data.price.toString());
+      formData.append("costPerItem", data.costPerItem.toString());
+
+      data.stocks.forEach((stock: StockType, index: number) => {
+        formData.append(`stocks[${index}].warehouseId`, stock.warehouseId.toString());
+        formData.append(`stocks[${index}].quantity`, stock.quantity.toString());
+      });
+
+      formData.append("batchNumber", data.batchNumber);
+      formData.append("barcode", data.barcode || "");
+      formData.append("packagingWeight", data.packagingWeight.toString());
+
+      await privateAxios.post("/products", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       navigate("/dashboard/products");
-    }
-    catch (error) {
+    } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response) {
-          setError(error.response?.data);
-        }
-        else {
+          const apiError = error.response.data;
+          let errorMessage = "An error occurred";
+
+          if (typeof apiError === "object" && apiError !== null) {
+            errorMessage =
+                apiError.message || apiError.title || JSON.stringify(apiError);
+          } else if (typeof apiError === "string") {
+            errorMessage = apiError;
+          }
+          setError(errorMessage);
+        } else {
           setError(error.message);
         }
       } else {
@@ -148,11 +204,13 @@ const NewProduct = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const onError: SubmitErrorHandler<FormData> = (errors: FieldErrors) => {
     const errorCount = Object.keys(errors).length;
-    setError(`Form submission failed. ${errorCount} field(s) are invalidly filled in.`);
+    setError(
+      `Form submission failed. ${errorCount} field(s) are invalidly filled in.`,
+    );
   };
 
   return (
@@ -184,7 +242,11 @@ const NewProduct = () => {
 
       <div className="space-y-6 lg:space-y-0 lg:mx-auto lg:flex lg:max-w-screen-lg lg:gap-6">
         <div className="w-full space-y-6 lg:w-1/2">
-          <DetailsForm register={register} errors={errors}  setValue={setValue}/>
+          <DetailsForm
+            register={register}
+            errors={errors}
+            setValue={setValue}
+          />
           <AttributesForm
             register={register}
             control={control}
@@ -198,11 +260,7 @@ const NewProduct = () => {
             control={control}
             errors={errors}
           />
-          <PriceForm
-            control={control}
-            watch={watch}
-            errors={errors}
-          />
+          <PriceForm control={control} watch={watch} errors={errors} />
           <SubscriptionCard />
           <BatchForm register={register} errors={errors} />
         </div>
