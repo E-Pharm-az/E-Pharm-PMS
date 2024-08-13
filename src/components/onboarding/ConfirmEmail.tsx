@@ -51,31 +51,10 @@ const VerifyEmail = () => {
     return () => clearInterval(secondsInterval);
   }, [timeoutSeconds]);
 
-  useEffect(() => {
-    if (formData.email === "") {
-      goBack();
-    } else {
-      (async () => {
-        try {
-          await apiClient.post("/auth/resend-confirmation-email", {
-            Email: formData.email,
-          });
-          disabledButton();
-        } catch (error) {
-          if (error instanceof AxiosError) {
-            setError(error.response?.data);
-          } else {
-            setError("An unexpected error occurred.");
-          }
-        }
-      })();
-    }
-  }, []);
-
   const resendOTP = useCallback(async () => {
     setLoading(true);
     try {
-      await apiClient.post("/auth/resend-confirmation-email", {
+      await apiClient.post("/user/resend-confirmation-email", {
         email: formData.email,
       });
       disabledButton();
@@ -86,9 +65,19 @@ const VerifyEmail = () => {
     }
   }, [formData.email, setError]);
 
+  useEffect(() => {
+    if (formData.email === "") {
+      goBack();
+    } else {
+      (async () => {
+        await resendOTP();
+      })();
+    }
+  }, []);
+
   const onSubmit = async (data: FormData) => {
     try {
-      await apiClient.post("/auth/confirm-email", {
+      await apiClient.post("/user/confirm-email", {
         email: formData.email,
         code: data.code,
       });
