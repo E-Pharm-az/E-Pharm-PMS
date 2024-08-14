@@ -17,7 +17,7 @@ const PersistLogin = () => {
       try {
         await refreshToken();
       } catch (error) {
-        /* empty */
+        console.log(error);
       } finally {
         isMounted && setIsRefreshing(false);
         setLoading(false);
