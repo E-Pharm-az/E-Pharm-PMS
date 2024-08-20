@@ -5,7 +5,7 @@ const Dashboard = () => {
 
       <div className="h-full flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
         <div className="flex flex-col items-center gap-1 text-center">
-          <h3 className="text-2xl font-bold tracking-tight">No data to show</h3>
+          <h3 className="text-2xl font-bold tracking-tight">Comming soon</h3>
         </div>
       </div>
     </div>

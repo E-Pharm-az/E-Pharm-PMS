@@ -11,7 +11,7 @@ const useRefreshToken = () => {
 
   return async () => {
     const response = await axiosPrivate.get<TokenResponse>(
-      "/auth/refresh-token",
+      "/auth/pharmacy/refresh-token",
     );
 
     const decodedToken = jwtDecode<TokenPayload>(response.data.token);

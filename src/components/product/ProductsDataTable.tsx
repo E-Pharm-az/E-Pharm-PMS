@@ -4,10 +4,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
 import { Clock } from "lucide-react";
 import {DataTable} from "@/components/ui/data-table.tsx";
-import {Product} from "@/components/product/Products.tsx";
 import LoaderContext from "@/context/LoaderContext.tsx";
 import ErrorContext from "@/context/ErrorContext.tsx";
 import {AxiosError} from "axios";
+import Product from "@/types/product.ts";
 
 const columns: ColumnDef<Product>[] = [
   {

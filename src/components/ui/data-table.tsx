@@ -107,7 +107,7 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="border rounded-md">
+    <div className="border rounded-md bg-white">
       <div className="p-2 border-b flex justify-between space-x-2">
         {showSearch && (
           <div className="relative items-center w-full">
