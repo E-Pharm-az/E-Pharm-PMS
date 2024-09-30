@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { FormData } from "@/components/product/NewProduct";
+import { FormData } from "@/pages/product/NewProduct";
 import { FormInput } from "@/components/ui/form-input";
 
 interface Props {

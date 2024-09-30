@@ -8,8 +8,8 @@ import {
   FieldErrors,
   UseFormRegister,
 } from "react-hook-form";
-import { FormData } from "@/components/product/NewProduct.tsx";
-import { AttributeSelector } from "@/components/product/ui/attribute-selector.tsx";
+import { FormData } from "@/pages/product/NewProduct.tsx";
+import { AttributeSelector } from "@/pages/product/ui/attribute-selector.tsx";
 import {
   ActiveIngredient,
   Allergy,
@@ -18,10 +18,10 @@ import {
   RouteOfAdministration, SideEffect, SpecialRequirement, UsageWarning
 } from "@/types/product-attribute-types.ts";
 import { FormInput } from "@/components/ui/form-input.tsx";
-import { ActiveIngredientForm } from "@/components/product/attribute-forms/ActiveIngredientForm.tsx";
-import {ManufacturerForm} from "@/components/product/attribute-forms/ManufacturerForm.tsx";
-import {RegulatoryInformationForm} from "@/components/product/attribute-forms/RegulatoryInformationForm.tsx";
-import {SpecialRequirementForm} from "@/components/product/attribute-forms/SpecialRequirementForm.tsx";
+import { ActiveIngredientForm } from "@/pages/product/attribute-forms/ActiveIngredientForm.tsx";
+import {ManufacturerForm} from "@/pages/product/attribute-forms/ManufacturerForm.tsx";
+import {RegulatoryInformationForm} from "@/pages/product/attribute-forms/RegulatoryInformationForm.tsx";
+import {SpecialRequirementForm} from "@/pages/product/attribute-forms/SpecialRequirementForm.tsx";
 import {format, isAfter, isBefore} from "date-fns";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
 import {Button} from "@/components/ui/button.tsx";

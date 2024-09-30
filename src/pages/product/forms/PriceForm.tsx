@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/tooltip.tsx";
 import { Asterisk, CircleHelp } from "lucide-react";
 import { Control, FieldErrors, UseFormWatch } from "react-hook-form";
-import { FormData } from "@/components/product/NewProduct.tsx";
+import { FormData } from "@/pages/product/NewProduct.tsx";
 import { useEffect, useState } from "react";
-import PriceInput from "@/components/product/ui/price-input.tsx";
+import PriceInput from "@/pages/product/ui/price-input.tsx";
 
 interface Props {
   control: Control<FormData>;

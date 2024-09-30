@@ -1,11 +1,14 @@
+import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 import { useContext, useEffect, useMemo, useState } from "react";
+import LoaderContext from "@/context/LoaderContext.tsx";
+import ErrorContext from "@/context/ErrorContext.tsx";
+import { AxiosError } from "axios";
 import {
-  type ChartConfig,
+  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+} from "@/components/ui/chart.tsx";
 import {
   Select,
   SelectContent,
@@ -13,19 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.tsx";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table.tsx";
-import { Clock } from "lucide-react";
-import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import ErrorContext from "@/context/ErrorContext";
-import LoaderContext from "@/context/LoaderContext";
-import { AxiosError } from "axios";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 interface Sales {
   date: string;
@@ -50,7 +41,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const Dashboard = () => {
+const SalesChart = () => {
   const axiosPrivate = useAxiosPrivate();
   const { setLoading } = useContext(LoaderContext);
   const { setError } = useContext(ErrorContext);
@@ -80,7 +71,6 @@ const Dashboard = () => {
           },
         });
 
-        // Ensure we have data for every day in the range
         const filledData = fillMissingDates(response.data.sales, start, end);
         setSalesSummary({
           ...response.data,
@@ -169,8 +159,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="p-6 space-y-6 h-full w-full max-w-[976px] mx-auto">
-      <h1 className="text-lg font-semibold md:text-2xl">Dashboard</h1>
+    <>
       <Select value={timeRange} onValueChange={setTimeRange}>
         <SelectTrigger
           className="w-[160px] rounded-lg"
@@ -240,61 +229,7 @@ const Dashboard = () => {
           </LineChart>
         </ChartContainer>
       </div>
-      <div className="grid gap-4 w-full bg-white rounded-md p-2 md:p-4">
-        <p className="text-md font-semibold md:text-xl">Recent orders</p>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Order #</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">#HG-001</TableCell>
-              <TableCell>Paid</TableCell>
-              <TableCell>John Doe</TableCell>
-              <TableCell className="text-right">250.00 ₼</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-      <div className="grid gap-4 w-full bg-white rounded-md p-2 md:p-4">
-        <p className="text-md font-semibold md:text-xl">
-          Products waiting for approval
-        </p>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Image</TableHead>
-              <TableHead className="w-full">Name</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">
-                <img
-                  src="https://ik.imagekit.io/epharm/4a5c68e0-6009-47f6-9b58-77b7a1d6b9e1"
-                  alt="Product"
-                  className="w-12 h-12"
-                />
-              </TableCell>
-              <TableCell>Parecetamol</TableCell>
-              <TableCell>
-                <div className="flex w-min items-center justify-center rounded-full border border-yellow-400 bg-yellow-300 px-2 py-1 text-center text-xs text-nowrap space-x-1.5">
-                  <Clock className="h-4 w-4" />
-                  <p>Pending approval</p>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+    </>
   );
 };
-
-export default Dashboard;
+export default SalesChart;

@@ -3,11 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button.tsx";
 import InitialSlidePage from "@/components/InitialSlidePage.tsx";
-import ErrorPage from "@/components/onboarding/ErrorPage.tsx";
 import OnboardingContext from "@/context/OnboardingContext.tsx";
 import apiClient from "@/services/api-client.ts";
 import LoaderContext from "@/context/LoaderContext.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
+import ErrorPage from "@/pages/onboarding/ErrorPage.tsx";
 
 const Welcome = () => {
   const { id } = useParams();

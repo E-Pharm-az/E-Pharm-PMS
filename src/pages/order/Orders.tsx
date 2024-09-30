@@ -1,4 +1,4 @@
-import OrderDataTable from "@/components/order/OrderDataTable.tsx";
+import OrderDataTable from "@/pages/order/OrderDataTable.tsx";
 
 const Order = () => {
   return (

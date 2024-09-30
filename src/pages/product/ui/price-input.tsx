@@ -1,6 +1,6 @@
 import {useState, useEffect, FC, ChangeEvent} from "react";
 import { useController, Control } from "react-hook-form";
-import { FormData } from "@/components/product/NewProduct.tsx";
+import { FormData } from "@/pages/product/NewProduct.tsx";
 
 interface PriceInputProps {
   name: "price" | "costPerItem";

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button.tsx";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
-import ProductsDataTable from "@/components/product/ProductsDataTable.tsx";
+import ProductsDataTable from "@/pages/product/ProductsDataTable.tsx";
 
 const Products = () => {
   return (

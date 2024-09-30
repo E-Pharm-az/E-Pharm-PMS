@@ -15,7 +15,7 @@ const MobileSidebar = () => {
         <nav className="grid gap-2 text-lg font-medium">
           <img src={Logo} alt="Logo" />
           <Link
-            to={"/dashboard"}
+            to={"/src/components/home/Dashboard.tsx"}
             className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
               location.pathname === "/dashboard"
                 ? "bg-muted text-primary"

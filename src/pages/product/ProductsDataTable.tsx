@@ -3,7 +3,7 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
 import { Clock } from "lucide-react";
-import {DataTable} from "@/components/ui/data-table.tsx";
+import { DataTable } from "@/components/ui/data-table.tsx";
 import LoaderContext from "@/context/LoaderContext.tsx";
 import ErrorContext from "@/context/ErrorContext.tsx";
 import {AxiosError} from "axios";
@@ -35,13 +35,16 @@ const columns: ColumnDef<Product>[] = [
   {
     id: "imageUrl",
     header: "Image",
-    cell: ({ row }) => (
-      <img
-        className="h-10 w-10 pointer-events-none"
-        src={row.original.imageUrl}
-        alt={row.original.name}
-      />
-    ),
+    cell: ({ row }) =>
+      row.original.imageUrl ? (
+        <img
+          className="h-10 w-10 pointer-events-none"
+          src={row.original.imageUrl}
+          alt={row.original.name}
+        />
+      ) : (
+          <p>NOT_FOUND</p>
+      ),
   },
   {
     accessorKey: "name",

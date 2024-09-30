@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { FormData } from "@/components/product/NewProduct.tsx";
+import { FormData } from "@/pages/product/NewProduct.tsx";
 import { FormInput } from "@/components/ui/form-input.tsx";
 import { Asterisk } from "lucide-react";
 

@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import { CircleHelp } from "lucide-react";
-import { AttributeSelector } from "@/components/product/ui/attribute-selector.tsx";
+import { AttributeSelector } from "@/pages/product/ui/attribute-selector.tsx";
 import { Warehouse } from "@/types/product-attribute-types.ts";
 import { FC, useEffect, useState } from "react";
 import {
@@ -16,9 +16,9 @@ import {
   useFieldArray,
   UseFormRegister,
 } from "react-hook-form";
-import { FormData } from "@/components/product/NewProduct.tsx";
+import { FormData } from "@/pages/product/NewProduct.tsx";
 import { FormInput } from "@/components/ui/form-input.tsx";
-import { WarehouseForm } from "@/components/product/attribute-forms/WarehouseForm.tsx";
+import { WarehouseForm } from "@/pages/product/attribute-forms/WarehouseForm.tsx";
 
 type SingleOrArray<T> = T | T[] | null;
 
