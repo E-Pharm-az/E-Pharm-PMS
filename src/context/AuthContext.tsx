@@ -6,29 +6,16 @@ import {
   useState,
 } from "react";
 import apiClient, { axiosPrivate } from "@/services/api-client.ts";
-import { jwtDecode } from "jwt-decode";
 
-export interface TokenResponse {
-  token: string;
-  refreshToken: string;
-  validTo: string;
-}
-
-export interface TokenPayload {
-  jti: string;
-  email: string;
-  sub: string;
-}
-
-export interface AuthUser {
+export interface User {
   id: string;
   email: string;
   firstname: string;
 }
 
 interface AuthContextType {
-  auth: AuthUser | null;
-  setAuth: Dispatch<SetStateAction<AuthUser | null>>;
+  user: User | null;
+  setUser: Dispatch<SetStateAction<User | null>>;
   isAuthenticated: () => boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -37,8 +24,8 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType>({
-  auth: null,
-  setAuth: () => {},
+  user: null,
+  setUser: () => {},
   isAuthenticated: () => false,
   login: () => Promise.resolve(),
   logout: () => {},
@@ -47,11 +34,11 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [auth, setAuth] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(true);
 
   const isAuthenticated = (): boolean => {
-    return !!auth;
+    return !!user;
   };
 
   const login = async (email: string, password: string) => {
@@ -60,25 +47,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       password,
     });
 
-    const decodedToken = jwtDecode<TokenPayload>(response.data.token);
-
-    setAuth({
-      id: decodedToken.jti,
-      email: decodedToken.email,
-      firstname: decodedToken.sub,
-    });
+    setUser(response.data);
   };
 
   const logout = async () => {
-    setAuth(null);
+    setUser(null);
     await apiClient.get("/auth/logout", { withCredentials: true });
   };
 
   return (
     <AuthContext.Provider
       value={{
-        auth,
-        setAuth,
+        user,
+        setUser,
         isAuthenticated,
         login,
         logout,
