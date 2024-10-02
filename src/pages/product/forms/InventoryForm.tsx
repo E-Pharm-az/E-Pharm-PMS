@@ -22,6 +22,8 @@ import { WarehouseForm } from "@/pages/product/attribute-forms/WarehouseForm.tsx
 
 type SingleOrArray<T> = T | T[] | null;
 
+// Fixed issue
+
 interface Props {
   register: UseFormRegister<FormData>;
   control: Control<FormData>;
@@ -94,7 +96,7 @@ export const InventoryForm: FC<Props> = ({ register, errors, control }) => {
                   <Label>
                     {
                       warehouses?.find(
-                        (warehouse) => warehouse.id === field.warehouseId,
+                        (warehouse) => warehouse.id === field.warehouseId
                       )?.name
                     }{" "}
                     Quantity
@@ -127,7 +129,7 @@ export const InventoryForm: FC<Props> = ({ register, errors, control }) => {
                               {
                                 warehouses?.find(
                                   (warehouse) =>
-                                    warehouse.id === field.warehouseId,
+                                    warehouse.id === field.warehouseId
                                 )?.name
                               }
                             </p>
