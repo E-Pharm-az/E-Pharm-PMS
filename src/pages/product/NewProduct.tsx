@@ -27,7 +27,7 @@ const StockTypeSchema = z.object({
   quantity: z.number(),
 });
 
-type StockType  = z.infer<typeof StockTypeSchema>;
+type StockType = z.infer<typeof StockTypeSchema>;
 
 const schema = z.object({
   name: z.string().min(3, "Product name should be at least (3) characters"),
@@ -38,7 +38,7 @@ const schema = z.object({
   image: z.instanceof(File).optional(),
   strengthMg: z.preprocess(
     (val) => (val === "" ? undefined : Number(val)),
-    z.number().min(1, "Required"),
+    z.number().min(1, "Required")
   ),
   contraindicationsDescription: z.string().optional(),
   storageConditionDescription: z.string().optional(),
@@ -60,11 +60,11 @@ const schema = z.object({
     .transform((val) => new Date(val)),
   price: z.preprocess(
     (val) => (val === "" ? undefined : Number(val)),
-    z.number().min(0, "Required"),
+    z.number().min(0, "Required")
   ),
   costPerItem: z.preprocess(
     (val) => (val === "" ? undefined : Number(val)),
-    z.number().min(0, "Required"),
+    z.number().min(0, "Required")
   ),
   stocks: z
     .array(StockTypeSchema)
@@ -73,7 +73,7 @@ const schema = z.object({
   barcode: z.string(),
   packagingWeight: z.preprocess(
     (val) => (val === "" ? undefined : Number(val)),
-    z.number().min(0, "Required"),
+    z.number().min(0, "Required")
   ),
 });
 
@@ -117,13 +117,25 @@ const NewProduct = () => {
         formData.append("image", data.image);
       }
       formData.append("strengthMg", data.strengthMg.toString());
-      formData.append("contraindicationsDescription", data.contraindicationsDescription || "");
-      formData.append("storageConditionDescription", data.storageConditionDescription || "");
+      formData.append(
+        "contraindicationsDescription",
+        data.contraindicationsDescription || ""
+      );
+      formData.append(
+        "storageConditionDescription",
+        data.storageConditionDescription || ""
+      );
       if (data.specialRequirementsId !== undefined) {
-        formData.append("specialRequirementsId", data.specialRequirementsId.toString());
+        formData.append(
+          "specialRequirementsId",
+          data.specialRequirementsId.toString()
+        );
       }
       formData.append("manufacturerId", data.manufacturerId.toString());
-      formData.append("regulatoryInformationId", data.regulatoryInformationId.toString());
+      formData.append(
+        "regulatoryInformationId",
+        data.regulatoryInformationId.toString()
+      );
 
       data.activeIngredientsIds.forEach((id: number, index: number) => {
         formData.append(`activeIngredientsIds[${index}]`, id.toString());
@@ -161,13 +173,19 @@ const NewProduct = () => {
         });
       }
 
-      formData.append("manufacturingDate", data.manufacturingDate.toISOString());
+      formData.append(
+        "manufacturingDate",
+        data.manufacturingDate.toISOString()
+      );
       formData.append("expiryDate", data.expiryDate.toISOString());
       formData.append("price", data.price.toString());
       formData.append("costPerItem", data.costPerItem.toString());
 
       data.stocks.forEach((stock: StockType, index: number) => {
-        formData.append(`stocks[${index}].warehouseId`, stock.warehouseId.toString());
+        formData.append(
+          `stocks[${index}].warehouseId`,
+          stock.warehouseId.toString()
+        );
         formData.append(`stocks[${index}].quantity`, stock.quantity.toString());
       });
 
@@ -190,7 +208,7 @@ const NewProduct = () => {
 
           if (typeof apiError === "object" && apiError !== null) {
             errorMessage =
-                apiError.message || apiError.title || JSON.stringify(apiError);
+              apiError.message || apiError.title || JSON.stringify(apiError);
           } else if (typeof apiError === "string") {
             errorMessage = apiError;
           }
@@ -209,7 +227,7 @@ const NewProduct = () => {
   const onError: SubmitErrorHandler<FormData> = (errors: FieldErrors) => {
     const errorCount = Object.keys(errors).length;
     setError(
-      `Form submission failed. ${errorCount} field(s) are invalidly filled in.`,
+      `Form submission failed. ${errorCount} field(s) are invalidly filled in.`
     );
   };
 
@@ -260,7 +278,7 @@ const NewProduct = () => {
             control={control}
             errors={errors}
           />
-          <PriceForm control={control} watch={watch} errors={errors} />
+          <PriceForm register={register} watch={watch} errors={errors} />
           <SubscriptionCard />
           <BatchForm register={register} errors={errors} />
         </div>

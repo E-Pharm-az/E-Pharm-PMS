@@ -7,12 +7,11 @@ import {
   TableRow,
 } from "@/components/ui/table.tsx";
 import SalesChart from "@/pages/home/SalesChart.tsx";
-import {Order} from "@/types/order.ts";
-import {useContext, useEffect, useState} from "react";
+import { Order } from "@/types/order.ts";
+import { useContext, useEffect, useState } from "react";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 import ErrorContext from "@/context/ErrorContext.tsx";
-import {AxiosError} from "axios";
-
+import { AxiosError } from "axios";
 
 const Dashboard = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -24,13 +23,11 @@ const Dashboard = () => {
       try {
         const response = await axiosPrivate.get<Order[]>("/orders/pharmacy");
         setOrders(response.data);
-        console.log(response.data);
-      }
-      catch (error) {
+      } catch (error) {
         if (error instanceof AxiosError) {
           if (error.response) {
             if (error.response.status !== 404) {
-              setError(error.response?.data)
+              setError(error.response?.data);
             }
           }
         } else {
@@ -69,7 +66,7 @@ const Dashboard = () => {
                   <TableCell className="text-right">
                     {order.orderProducts.reduce(
                       (acc, curr) => acc + curr.product.price * curr.quantity,
-                      0,
+                      0
                     )}
                   </TableCell>
                 </TableRow>

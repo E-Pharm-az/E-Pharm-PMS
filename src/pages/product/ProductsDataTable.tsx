@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import { useContext, useEffect, useState } from "react";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
@@ -6,7 +6,7 @@ import { Clock } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table.tsx";
 import LoaderContext from "@/context/LoaderContext.tsx";
 import ErrorContext from "@/context/ErrorContext.tsx";
-import {AxiosError} from "axios";
+import { AxiosError } from "axios";
 import Product from "@/types/product.ts";
 
 const columns: ColumnDef<Product>[] = [
@@ -43,7 +43,7 @@ const columns: ColumnDef<Product>[] = [
           alt={row.original.name}
         />
       ) : (
-          <p>NOT_FOUND</p>
+        <p>NOT_FOUND</p>
       ),
   },
   {
@@ -54,7 +54,7 @@ const columns: ColumnDef<Product>[] = [
   {
     id: "price",
     header: "Price (AZN)",
-    cell: ({ row }) => (row.original.price / 100).toFixed(2),
+    cell: ({ row }) => row.original.price,
   },
   {
     id: "Approval State",
@@ -71,7 +71,7 @@ const columns: ColumnDef<Product>[] = [
 const ProductsDataTable = () => {
   const axiosPrivate = useAxiosPrivate();
   const [products, setProducts] = useState<Product[]>([]);
-  const {setLoading, loading} = useContext(LoaderContext)
+  const { setLoading, loading } = useContext(LoaderContext);
   const { setError } = useContext(ErrorContext);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const ProductsDataTable = () => {
       setLoading(true);
       try {
         const response = await axiosPrivate.get<Product[]>(
-          `/products/pharmacy?page=1`,
+          `/products/pharmacy?page=1`
         );
         setProducts(response.data);
       } catch (error) {
@@ -92,8 +92,7 @@ const ProductsDataTable = () => {
         } else {
           setError("Unexpected error");
         }
-      }
-      finally {
+      } finally {
         setLoading(false);
       }
     })();

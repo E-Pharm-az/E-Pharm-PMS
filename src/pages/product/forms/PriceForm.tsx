@@ -7,18 +7,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import { Asterisk, CircleHelp } from "lucide-react";
-import { Control, FieldErrors, UseFormWatch } from "react-hook-form";
+import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
 import { FormData } from "@/pages/product/NewProduct.tsx";
 import { useEffect, useState } from "react";
-import PriceInput from "@/pages/product/ui/price-input.tsx";
+import { FormInput } from "@/components/ui/form-input";
 
 interface Props {
-  control: Control<FormData>;
+  register: UseFormRegister<FormData>;
   watch: UseFormWatch<FormData>;
   errors: FieldErrors<FormData>;
 }
 
-export const PriceForm = ({ control, watch, errors }: Props) => {
+export const PriceForm = ({ register, watch, errors }: Props) => {
   const [profit, setProfit] = useState<number | null>(null);
   const [margin, setMargin] = useState<number | null>(null);
 
@@ -28,13 +28,12 @@ export const PriceForm = ({ control, watch, errors }: Props) => {
     const calculatedProfit = data.price - data.costPerItem;
     const calculatedMargin = (calculatedProfit / data.price) * 100;
 
-    // Divide by 100 as the values are stored as integers
-    setProfit(calculatedProfit / 100);
-    setMargin(calculatedMargin / 100);
+    setProfit(calculatedProfit);
+    setMargin(calculatedMargin);
   };
 
   useEffect(() => {
-    if (watchAllFields.price != null && watchAllFields.costPerItem != null) {
+    if (watchAllFields.price != 0 && watchAllFields.costPerItem != 0) {
       calculateProfitAndMargin(watchAllFields);
     } else {
       setProfit(null);
@@ -52,7 +51,12 @@ export const PriceForm = ({ control, watch, errors }: Props) => {
                 <Asterisk className="h-4 w-4 text-red-500" />
                 <Label>Price (AZN)</Label>
               </div>
-              <PriceInput name="price" control={control} placeholder="₼ 0.00" />
+              <FormInput
+                id="price"
+                {...register("price")}
+                type="number"
+                placeholder="₼ 0.00"
+              />
               {errors.price && (
                 <p className="text-red-400">{errors.price.message}</p>
               )}
@@ -63,9 +67,10 @@ export const PriceForm = ({ control, watch, errors }: Props) => {
                 <Label>Cost Per Item (AZN)</Label>
               </div>
               <div className="relative">
-                <PriceInput
-                  name="costPerItem"
-                  control={control}
+                <FormInput
+                  id="costPerItem"
+                  {...register("costPerItem")}
+                  type="number"
                   placeholder="₼ 0.00"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 text-muted-foreground">
@@ -99,7 +104,7 @@ export const PriceForm = ({ control, watch, errors }: Props) => {
             <div className="w-1/2 grid gap-2">
               <Label>Margin</Label>
               <div className="flex h-10 w-full rounded-md file:border-0 border file:bg-transparent px-3 py-2 text-sm file:text-sm file:font-medium border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                {margin !== null ? `${margin.toFixed(2)}%` : "--"}
+                {margin !== null ? `${margin}%` : "--"}
               </div>
             </div>
           </div>

@@ -54,7 +54,6 @@ const OrderDataTable = () => {
       try {
         const response = await axiosPrivate.get<Order[]>("/orders/pharmacy");
         setOrders(response.data);
-        console.log(response.data);
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.response) {
