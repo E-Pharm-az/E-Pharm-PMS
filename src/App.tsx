@@ -18,6 +18,8 @@ import Dashboard from "@/pages/home/Dashboard.tsx";
 import NewProduct from "@/pages/product/NewProduct.tsx";
 import Orders from "@/pages/order/Orders.tsx";
 
+// Hello world
+
 function App() {
   return (
     <>
