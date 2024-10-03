@@ -94,7 +94,7 @@ export const InventoryForm: FC<Props> = ({ register, errors, control }) => {
                   <Label>
                     {
                       warehouses?.find(
-                        (warehouse) => warehouse.id === field.warehouseId,
+                        (warehouse) => warehouse.id === field.warehouseId
                       )?.name
                     }{" "}
                     Quantity
@@ -127,7 +127,7 @@ export const InventoryForm: FC<Props> = ({ register, errors, control }) => {
                               {
                                 warehouses?.find(
                                   (warehouse) =>
-                                    warehouse.id === field.warehouseId,
+                                    warehouse.id === field.warehouseId
                                 )?.name
                               }
                             </p>
